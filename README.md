@@ -1,0 +1,2 @@
+# THE HERMETIC ORACLE
+What it synthesizes (all three systems unified):  Three Pillars (Oracle2): Sky Geometry · Planetary Hour · Lunar Mansion # Four Sections (Alchemical Math): Esoteric Mathematics · Hermetic Principle · Vowel Chant · Unified Mantra/Meditation HOS core: Convergence Score with breakdown · Celestial Overrides · Visualization Gateway · Hall of Amenti · Astral Shield · Seal Geometry · Hermetic Formula · Oracle Intelligence Report
