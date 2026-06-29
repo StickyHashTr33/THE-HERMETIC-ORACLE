@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermetic Oracle &mdash; June 29, 2026</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold: #c9a84c;
+  --gold-bright: #f0c040;
+  --gold-dim: rgba(201,168,76,0.3);
+  --crimson: #8b1a1a;
+  --crimson-bright: #c41e3a;
+  --silver: #b0b8c0;
+  --bg: #07070f;
+  --bg2: #0d0a14;
+  --bg3: #13101e;
+  --card: rgba(255,255,255,0.035);
+  --card-hover: rgba(255,255,255,0.055);
+  --border: rgba(201,168,76,0.22);
+  --border-bright: rgba(201,168,76,0.5);
+  --text: #d4cfc4;
+  --muted: #7a7060;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(180deg, #04030a 0%, #0a0718 40%, #0d0a1f 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.hero-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.hero-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  color: var(--silver);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.75rem;
+}
+.hero-location {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+}
+
+/* ─── MAIN LAYOUT ─────────────────────────────────────── */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ─── CONVERGENCE SCORE ───────────────────────────────── */
+.convergence-wrap {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.convergence-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(4rem, 12vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #f0c040, #c9a84c, #e8b830);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.convergence-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+.tier-badge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.3rem 1.2rem;
+  border: 1px solid var(--gold);
+  border-radius: 2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+.convergence-breakdown {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.breakdown-item {
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+}
+
+/* ─── OVERRIDE BANNER ─────────────────────────────────── */
+.override-banner {
+  background: linear-gradient(135deg, rgba(139,26,26,0.35), rgba(196,30,58,0.15));
+  border: 1px solid rgba(196,30,58,0.5);
+  border-left: 4px solid var(--crimson-bright);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.override-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--crimson-bright);
+  margin-bottom: 0.4rem;
+}
+.override-meta {
+  font-size: 0.78rem;
+  color: var(--silver);
+  margin-bottom: 0.5rem;
+}
+.override-msg {
+  font-size: 0.85rem;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* ─── CARDS ───────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── THREE PILLARS ───────────────────────────────────── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 600px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+}
+.pillar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+}
+.pillar-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.pillar-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.pillar-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.1em;
+}
+.pillar-main {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+.pillar-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.pillar-detail {
+  font-size: 0.72rem;
+  color: var(--silver);
+  margin-top: 0.3rem;
+}
+
+/* ─── PARAM GRIDS ─────────────────────────────────────── */
+.param-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (max-width: 500px) {
+  .param-grid { grid-template-columns: 1fr; }
+}
+.param-item { }
+.param-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.param-value {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.param-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+/* ─── TWO-COL CARDS ROW ───────────────────────────────── */
+.two-col-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 600px) {
+  .two-col-row { grid-template-columns: 1fr; }
+}
+
+/* ─── SOLAR/LUNAR ITEMS ───────────────────────────────── */
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.82rem;
+}
+.time-row:last-child { border-bottom: none; }
+.time-label { color: var(--muted); }
+.time-value { font-family: 'Cinzel', serif; color: var(--text); }
+.time-row.primary .time-label { color: var(--gold); }
+.time-row.primary .time-value { color: var(--gold-bright); }
+
+/* ─── SECTION HEADERS ─────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.5rem 0 1.25rem;
+}
+.section-header::before,
+.section-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section-header::before { max-width: 2rem; }
+.section-numeral {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--crimson-bright);
+  white-space: nowrap;
+}
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* ─── SECTION CONTENT ─────────────────────────────────── */
+.section-content p {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+.section-content p:last-child { margin-bottom: 0; }
+
+/* ─── VISUALIZATION / HALL ────────────────────────────── */
+.gateway-card {
+  background: linear-gradient(135deg, rgba(13,10,20,0.95), rgba(20,14,32,0.95));
+  border: 1px solid var(--border-bright);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+.gateway-card p {
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--silver);
+  font-style: italic;
+}
+.gateway-card p + p { margin-top: 0.75rem; }
+
+/* ─── MANTRA DISPLAY ──────────────────────────────────── */
+.mantra-line {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: var(--gold-bright);
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 1.25rem;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+}
+
+/* ─── HERMETIC FORMULA ────────────────────────────────── */
+.formula-box {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--gold);
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-top: 0.75rem;
+}
+.formula-key {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ─── ORACLE REPORT ───────────────────────────────────── */
+.oracle-section {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.oracle-section:last-child { border-bottom: none; }
+.oracle-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--crimson-bright);
+  margin-bottom: 0.4rem;
+}
+.oracle-text {
+  font-size: 0.87rem;
+  color: var(--text);
+  line-height: 1.8;
+}
+.transmission-text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  color: var(--gold-bright);
+  font-style: italic;
+}
+
+/* ─── SHIELD / SEAL ───────────────────────────────────── */
+.seal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 600px) { .seal-row { grid-template-columns: 1fr; } }
+
+/* ─── FREQUENCY PILL ──────────────────────────────────── */
+.freq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid var(--gold-dim);
+  border-radius: 2rem;
+  padding: 0.25rem 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+}
+
+/* ─── FOOTER ──────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.footer-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+}
+.footer-time {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO HEADER -->
+<div class="hero">
+  <div class="hero-eyebrow">Hermetic Oracle Engine &bull; Unified Synthesis</div>
+  <div class="hero-title">THE HERMETIC ORACLE</div>
+  <div class="hero-subtitle">MONDAY &bull; JUNE 29, 2026</div>
+  <div class="hero-location">&#x2609; San Antonio, TX &nbsp;&bull;&nbsp; Day Ruler: Sun &nbsp;&bull;&nbsp; Gold &bull; Fire</div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+
+  <!-- CONVERGENCE SCORE -->
+  <div class="convergence-wrap">
+    <div class="convergence-num" style="color:#f0c040">97</div>
+    <div class="convergence-label">CONVERGENCE SCORE / 100</div>
+    <div class="tier-badge" style="color:#f0c040;border-color:#f0c040">&#9889; APEX</div>
+    <div class="convergence-breakdown"><span class="breakdown-item">Full Moon surge (+20)</span><span class="breakdown-item">Zenith+Ascendant convergence on Saturn (+5)</span><span class="breakdown-item">Power numerology 9 (+5)</span><span class="breakdown-item">Override active: FULL MOON CORRESPONDENCE (+17)</span></div>
+  </div>
+
+  
+    <div class="override-banner">
+      <div class="override-title">&#9889; CELESTIAL OVERRIDE &mdash; FULL MOON CORRESPONDENCE</div>
+      <div class="override-meta">Target: Mars & Luna &nbsp;|&nbsp; Law: Correspondence &nbsp;|&nbsp; Override Frequency: 528 Hz</div>
+      <div class="override-msg">Subconscious channels are saturated. Prioritize emotional alchemical transmutation.</div>
+    </div>
+
+  <!-- THREE PILLARS (Oracle2 Architecture) -->
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="pillar-num">PILLAR I</div>
+      <div class="pillar-icon">&#9728;</div>
+      <div class="pillar-name">SKY GEOMETRY</div>
+      <div class="pillar-main">Zenith: Saturn</div>
+      <div class="pillar-detail">Ascendant: Saturn</div>
+      <div class="pillar-sub">What is literally above you</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">PILLAR II</div>
+      <div class="pillar-icon">&#8987;</div>
+      <div class="pillar-name">PLANETARY HOUR</div>
+      <div class="pillar-main">Ruler: Mars</div>
+      <div class="pillar-detail">Hour #21 &bull; Night &bull; 8 min remaining</div>
+      <div class="pillar-sub">Day ruler: Sun</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">PILLAR III</div>
+      <div class="pillar-icon">&#9790;</div>
+      <div class="pillar-name">LUNAR MANSION</div>
+      <div class="pillar-main">#22: Al-Saad al-Dhabih</div>
+      <div class="pillar-detail">The Lucky Slaughterer</div>
+      <div class="pillar-sub">Building, structure, discipline</div>
+    </div>
+  </div>
+
+  <!-- PLANETARY PARAMETERS -->
+  <div class="card">
+    <div class="card-title">Planetary Parameters</div>
+    <div class="param-grid">
+      <div class="param-item">
+        <div class="param-label">Ruler</div>
+        <div class="param-value">Sun (Day) &bull; Mars (Hour)</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Metal &bull; Element</div>
+        <div class="param-value">Gold &bull; Fire</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Hermetic Principle</div>
+        <div class="param-value">Cause & Effect</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Solfeggio Frequency</div>
+        <div class="param-value"><span class="freq-pill">&#9835; 528 Hz</span></div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Word of Power</div>
+        <div class="param-value">RA-HU</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Sacred Vowel &bull; Chakra</div>
+        <div class="param-value">AH &bull; Solar Plexus (Manipura)</div>
+        <div class="param-note">Radiates solar warmth; ignites will and identity</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Chakra Circuit</div>
+        <div class="param-value">Solar Plexus (Manipura)</div>
+        <div class="param-note">Throne of solar will and radiant identity</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUMEROLOGY -->
+  <div class="card">
+    <div class="card-title">Esoteric Numerology</div>
+    <div class="param-grid">
+      <div class="param-item">
+        <div class="param-label">Calendar Numerology</div>
+        <div class="param-value">9 &mdash; Born</div>
+        <div class="param-note">Completion and initiation — the new cycle emerging from the old</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Base Number (Day of Month)</div>
+        <div class="param-value">11 &mdash; Illumination</div>
+        <div class="param-note">Master Number — doubled Knowledge, gateway between worlds</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLAR / LUNAR -->
+  <div class="two-col-row">
+    <div class="card">
+      <div class="card-title">Solar Activation Windows</div>
+      <div class="time-row"><span class="time-label">Astronomical Dawn</span><span class="time-value">05:01 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Nautical Twilight</span><span class="time-value">05:37 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Civil Twilight</span><span class="time-value">06:10 AM CDT</span></div>
+      <div class="time-row primary"><span class="time-label">&#9733; Sunrise (Primary Window)</span><span class="time-value">06:36 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Solar Noon</span><span class="time-value">01:37 PM CDT</span></div>
+      <div class="time-row"><span class="time-label">Sunset</span><span class="time-value">08:38 PM CDT</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Lunar Status</div>
+      <div class="time-row primary"><span class="time-label">Phase</span><span class="time-value">Waxing Gibbous</span></div>
+      <div class="time-row"><span class="time-label">Illumination</span><span class="time-value">99.5%</span></div>
+      <div class="time-row"><span class="time-label">Age</span><span class="time-value">14.3 days</span></div>
+      <div class="time-row"><span class="time-label">Ecliptic Longitude</span><span class="time-value">270.8&#176;</span></div>
+      <div class="time-row"><span class="time-label">Moonrise</span><span class="time-value">08:49 PM CDT</span></div>
+      <div class="time-row"><span class="time-label">Moonset</span><span class="time-value">06:02 AM CDT</span></div>
+    </div>
+  </div>
+
+  <!-- PLANET POSITIONS -->
+  <div class="card">
+    <div class="card-title">Live Planet Positions &bull; San Antonio, TX</div>
+    <div class="time-row"><span class="time-label">Moon</span><span class="time-value">Above · Alt 18.7° · Az 219.6°</span></div><div class="time-row"><span class="time-label">Mercury</span><span class="time-value">Below · Alt -39.3° · Az 19.6°</span></div><div class="time-row"><span class="time-label">Venus</span><span class="time-value">Below · Alt -42.9° · Az 350.0°</span></div><div class="time-row"><span class="time-label">Mars</span><span class="time-value">Below · Alt -2.2° · Az 65.6°</span></div><div class="time-row"><span class="time-label">Jupiter</span><span class="time-value">Below · Alt -38.7° · Az 14.0°</span></div><div class="time-row"><span class="time-label">Saturn</span><span class="time-value">Above · Alt 27.5° · Az 102.5°</span></div>
+  </div>
+
+  <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">I</span>
+    <span class="section-title">THE DAY&rsquo;S ESOTERIC MATHEMATICS</span>
+  </div>
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ═══ SECTION II: HERMETIC PRINCIPLE ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">II</span>
+    <span class="section-title">THE HERMETIC PRINCIPLE &mdash; CAUSE & EFFECT</span>
+  </div>
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ═══ SECTION III: VOWEL CHANT ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">III</span>
+    <span class="section-title">THE VOWEL CHANT PROTOCOL &mdash; AH</span>
+  </div>
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ═══ SECTION IV: MANTRA & MEDITATION ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">IV</span>
+    <span class="section-title">THE UNIFIED MANTRA &amp; MEDITATION</span>
+  </div>
+  
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- VISUALIZATION GATEWAY -->
+  <div class="section-header">
+    <span class="section-numeral">&#9790;</span>
+    <span class="section-title">VISUALIZATION GATEWAY</span>
+  </div>
+  <div class="gateway-card"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- HALL OF AMENTI -->
+  <div class="section-header">
+    <span class="section-numeral">&#9993;</span>
+    <span class="section-title">HALL OF AMENTI &mdash; THE SUN TEMPLE</span>
+  </div>
+  <div class="gateway-card"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ASTRAL SHIELD & SEAL -->
+  <div class="seal-row">
+    <div class="card">
+      <div class="card-title">Astral Shield Protocol</div>
+      <p style="font-size:0.87rem;line-height:1.8;color:var(--silver)">A blazing sphere of gold-white light, corona of solar rays extending outward in eight directions, core incandescent with Ra-fire.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Seal Geometry</div>
+      <p style="font-size:0.87rem;color:var(--silver);margin-bottom:0.75rem">A golden solar disc with eight rays inside a double circle of gold</p>
+      <div class="card-title" style="margin-top:1rem">Hermetic Formula</div>
+      <div class="formula-box">C = I * W * R_t</div>
+      <div class="formula-key">C=Causal Power, I=Intentional Will, W=Will-Force, R_t=Rhythmic Timing</div>
+    </div>
+  </div>
+
+  <!-- ORACLE INTELLIGENCE REPORT -->
+  <div class="section-header">
+    <span class="section-numeral">&#9670;</span>
+    <span class="section-title">ORACLE INTELLIGENCE REPORT</span>
+  </div>
+  <div class="card">
+      <div class="oracle-section">
+        <div class="oracle-num"> </div>
+        <div class="oracle-text">[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</div>
+      </div></div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-title">Hermetic Oracle Engine &bull; Unified Daily Synthesis</div>
+  <div class="footer-time">Generated: June 29, 2026 at 03:59 AM CDT</div>
+</div>
+
+</body>
+</html>
