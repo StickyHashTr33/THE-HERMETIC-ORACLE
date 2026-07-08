@@ -292,6 +292,20 @@ body {
 .time-row.primary .time-label { color: var(--gold); }
 .time-row.primary .time-value { color: var(--gold-bright); }
 .hour-practice { color: var(--muted); font-family: 'Raleway', sans-serif; font-size: 0.82em; }
+.pdot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 4px currentColor; }
+.hour-row { transition: background 0.3s, border-color 0.3s; border-left: 2px solid transparent; padding-left: 6px; }
+.hour-row.current-hour {
+  background: linear-gradient(90deg, rgba(240,192,64,0.14), rgba(240,192,64,0.02));
+  border-left: 2px solid var(--gold-bright);
+}
+.hour-row.current-hour .time-value,
+.hour-row.current-hour .hour-practice { color: var(--gold-bright); }
+.now-banner {
+  margin: 0.5rem 0 0.2rem; padding: 0.55rem 0.8rem; border-radius: 6px;
+  background: rgba(240,192,64,0.08); border: 1px solid var(--gold-dim);
+  color: var(--gold-bright); font-family: 'Cinzel', serif; font-size: 0.92rem;
+  text-align: center; letter-spacing: 0.02em;
+}
 
 /* ─── SECTION HEADERS ─────────────────────────────────── */
 .section-header {
@@ -485,8 +499,8 @@ body {
       <div class="pillar-num">PILLAR II</div>
       <div class="pillar-icon">&#8987;</div>
       <div class="pillar-name">PLANETARY HOUR</div>
-      <div class="pillar-main">Ruler: Saturn</div>
-      <div class="pillar-detail">Hour #3 &bull; Day &bull; 45 min remaining</div>
+      <div class="pillar-main" id="ph-ruler">Ruler: Saturn</div>
+      <div class="pillar-detail" id="ph-detail">Hour #3 &bull; Day &bull; 21 min remaining</div>
       <div class="pillar-sub">Day ruler: Mercury</div>
     </div>
     <div class="pillar">
@@ -567,9 +581,9 @@ body {
     <div class="card">
       <div class="card-title">Lunar Status</div>
       <div class="time-row primary"><span class="time-label">Phase</span><span class="time-value">Last Quarter</span></div>
-      <div class="time-row"><span class="time-label">Illumination</span><span class="time-value">41.5%</span></div>
+      <div class="time-row"><span class="time-label">Illumination</span><span class="time-value">41.3%</span></div>
       <div class="time-row"><span class="time-label">Age</span><span class="time-value">23.5 days</span></div>
-      <div class="time-row"><span class="time-label">Ecliptic Longitude</span><span class="time-value">26.5&#176;</span></div>
+      <div class="time-row"><span class="time-label">Ecliptic Longitude</span><span class="time-value">26.7&#176;</span></div>
       <div class="time-row"><span class="time-label">Moonrise</span><span class="time-value">01:51 AM CDT</span></div>
       <div class="time-row"><span class="time-label">Moonset</span><span class="time-value">02:45 PM CDT</span></div>
     </div>
@@ -578,20 +592,21 @@ body {
   <!-- PLANET POSITIONS -->
   <div class="card">
     <div class="card-title">Live Planet Positions &bull; San Antonio, TX</div>
-    <div class="time-row"><span class="time-label">Moon</span><span class="time-value">Above · Alt 64.8° · Az 236.6°</span></div><div class="time-row"><span class="time-label">Mercury</span><span class="time-value">Above · Alt 25.0° · Az 83.6°</span></div><div class="time-row"><span class="time-label">Venus</span><span class="time-value">Below · Alt -8.0° · Az 69.7°</span></div><div class="time-row"><span class="time-label">Mars</span><span class="time-value">Above · Alt 69.4° · Az 108.4°</span></div><div class="time-row"><span class="time-label">Jupiter</span><span class="time-value">Above · Alt 18.1° · Az 76.6°</span></div><div class="time-row"><span class="time-label">Saturn</span><span class="time-value">Above · Alt 51.6° · Az 233.1°</span></div>
+    <div class="time-row"><span class="time-label">Moon</span><span class="time-value">Above · Alt 60.3° · Az 244.6°</span></div><div class="time-row"><span class="time-label">Mercury</span><span class="time-value">Above · Alt 30.4° · Az 86.4°</span></div><div class="time-row"><span class="time-label">Venus</span><span class="time-value">Below · Alt -3.0° · Az 72.9°</span></div><div class="time-row"><span class="time-label">Mars</span><span class="time-value">Above · Alt 74.3° · Az 117.8°</span></div><div class="time-row"><span class="time-label">Jupiter</span><span class="time-value">Above · Alt 23.3° · Az 79.1°</span></div><div class="time-row"><span class="time-label">Saturn</span><span class="time-value">Above · Alt 47.2° · Az 239.6°</span></div>
   </div>
 
   <!-- PLANETARY HOURS SCHEDULE (compass) -->
   <div class="card">
     <div class="card-title">Hermetic Compass — Hourly Practice</div>
+    <div id="now-hour" class="now-banner">Locating current hour&hellip;</div>
     <div class="two-col-row" style="margin-top:0.4rem">
       <div>
         <div class="param-label" style="margin-bottom:0.4rem">&#9728; Day Hours</div>
-        <div class="time-row"><span class="time-label">📜 6:40 AM – 7:50 AM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row"><span class="time-label">🌙 7:50 AM – 9:00 AM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row"><span class="time-label">🪐 9:00 AM – 10:09 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row"><span class="time-label">♃ 10:09 AM – 11:19 AM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row"><span class="time-label">🔥 11:19 AM – 12:29 PM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row"><span class="time-label">☀️ 12:29 PM – 1:39 PM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row"><span class="time-label">💛 1:39 PM – 2:48 PM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row"><span class="time-label">📜 2:48 PM – 3:58 PM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row"><span class="time-label">🌙 3:58 PM – 5:08 PM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row"><span class="time-label">🪐 5:08 PM – 6:17 PM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row"><span class="time-label">♃ 6:17 PM – 7:27 PM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row"><span class="time-label">🔥 7:27 PM – 8:37 PM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div>
+        <div class="time-row hour-row" id="hr-0"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>6:40 AM – 7:50 AM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row hour-row" id="hr-1"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>7:50 AM – 9:00 AM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-2"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>9:00 AM – 10:09 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row hour-row" id="hr-3"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>10:09 AM – 11:19 AM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-4"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>11:19 AM – 12:29 PM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row hour-row" id="hr-5"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>12:29 PM – 1:39 PM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row hour-row" id="hr-6"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>1:39 PM – 2:48 PM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row hour-row" id="hr-7"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>2:48 PM – 3:58 PM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row hour-row" id="hr-8"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>3:58 PM – 5:08 PM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-9"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>5:08 PM – 6:17 PM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row hour-row" id="hr-10"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>6:17 PM – 7:27 PM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-11"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>7:27 PM – 8:37 PM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div>
       </div>
       <div>
         <div class="param-label" style="margin-bottom:0.4rem">&#127756; Night Hours</div>
-        <div class="time-row"><span class="time-label">☀️ 8:37 PM – 9:27 PM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row"><span class="time-label">💛 9:27 PM – 10:18 PM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row"><span class="time-label">📜 10:18 PM – 11:08 PM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row"><span class="time-label">🌙 11:08 PM – 11:58 PM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row"><span class="time-label">🪐 11:58 PM – 12:48 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row"><span class="time-label">♃ 12:48 AM – 1:39 AM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row"><span class="time-label">🔥 1:39 AM – 2:29 AM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row"><span class="time-label">☀️ 2:29 AM – 3:19 AM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row"><span class="time-label">💛 3:19 AM – 4:10 AM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row"><span class="time-label">📜 4:10 AM – 5:00 AM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row"><span class="time-label">🌙 5:00 AM – 5:50 AM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row"><span class="time-label">🪐 5:50 AM – 6:41 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div>
+        <div class="time-row hour-row" id="hr-12"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>8:37 PM – 9:27 PM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row hour-row" id="hr-13"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>9:27 PM – 10:18 PM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row hour-row" id="hr-14"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>10:18 PM – 11:08 PM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row hour-row" id="hr-15"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>11:08 PM – 11:58 PM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-16"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>11:58 PM – 12:48 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row hour-row" id="hr-17"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>12:48 AM – 1:39 AM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-18"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>1:39 AM – 2:29 AM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row hour-row" id="hr-19"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>2:29 AM – 3:19 AM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row hour-row" id="hr-20"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>3:19 AM – 4:10 AM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row hour-row" id="hr-21"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>4:10 AM – 5:00 AM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row hour-row" id="hr-22"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>5:00 AM – 5:50 AM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-23"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>5:50 AM – 6:41 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div>
       </div>
     </div>
     <div class="card-title" style="margin-top:1.2rem">&#10024; Key Hours</div>
@@ -601,48 +616,68 @@ body {
     <div class="param-note" style="margin-top:0.8rem;text-align:center">Move with the hours, not against them. Every planet serves the whole.</div>
   </div>
 
+  <div class="card">
+    <div class="card-title">Patterns &bull; Looking Back to Look Ahead</div>
+    <div class="param-grid">
+      <div class="param-item"><div class="param-label">Days Recorded</div>
+        <div class="param-value">1</div></div>
+      <div class="param-item"><div class="param-label">Current Streak</div>
+        <div class="param-value">1 day</div></div>
+      <div class="param-item"><div class="param-label">Avg Convergence</div>
+        <div class="param-value">55.0 / 100</div></div>
+      <div class="param-item"><div class="param-label">Peak Convergence</div>
+        <div class="param-value">55 / 100</div>
+        <div class="param-note">2026-07-08</div></div>
+      <div class="param-item"><div class="param-label">Most Common Tier</div>
+        <div class="param-value">BASELINE</div></div>
+    </div>
+    <div class="card-title" style="margin-top:1rem">Moon Phase Distribution</div>
+    <div class="time-row"><span class="time-label">Last Quarter</span><span class="time-value">1</span></div>
+    <div class="param-note" style="margin-top:0.7rem">Grows richer each day. Full data: <code>docs/data/history.jsonl</code></div>
+  </div>
+
   <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
   <div class="section-header">
     <span class="section-numeral">I</span>
     <span class="section-title">THE DAY&rsquo;S ESOTERIC MATHEMATICS</span>
   </div>
-  <div class="card section-content"><p>SECTION 1 — THE DAY'S ESOTERIC MATHEMATICS<br>The calendar number 7, representing God or the Master of self, is analyzed through Five Percenter Supreme Mathematics as the embodiment of wisdom and knowledge. This frequency is about self-awareness and the conscious architect of one's universe. The base number 8, Build/Destroy, signifies the dual nature of creation and the process of dissolution preceding construction. To embody both frequencies, at 06:20 AM CDT, exactly 20 minutes before sunrise, stand facing east with feet shoulder-width apart. Inhale for a count of 4, then exhale for a count of 4, repeating the phrase "I build and destroy" three times. Next, at 06:30 AM CDT, exactly 10 minutes before sunrise, perform a physical act of release, such as tearing a piece of paper or letting go of a small object, to symbolize the destruction phase. Finally, at 06:40 AM CDT, sunrise, raise your arms to the sky and proclaim "I am the architect of my universe," embodying the frequency of 7.</p></div>
+  <div class="card section-content"><p>The calendar number 7, representing God or the Master of self, is analyzed through the lens of Five Percenter Supreme Mathematics, which reveals the importance of self-awareness and inner wisdom. This frequency is about recognizing one's power and taking responsibility for one's universe. The base number 8, Build/Destroy, represents the dual nature of creation, where dissolution precedes construction. To embody both frequencies today, the practitioner should start by facing east at 06:20 AM CDT, 20 minutes before sunrise, and perform a brief, 5-minute journaling ritual to reflect on their current state of self-awareness and the areas where they need to rebuild or reconstruct. Then, at exactly 06:40 AM CDT, they should stand up, raise their arms to the sky, and proclaim their intention to embody the God frequency, using the words "I am the architect of my universe." This physical ritual action, tied to the timing relative to sunrise, will help the practitioner connect with the energies of the day and align themselves with the principles of self-mastery and creation.</p></div>
 
   <!-- ═══ SECTION II: HERMETIC PRINCIPLE ═══ -->
   <div class="section-header">
     <span class="section-numeral">II</span>
     <span class="section-title">THE HERMETIC PRINCIPLE &mdash; CORRESPONDENCE</span>
   </div>
-  <div class="card section-content"><p>SECTION 2 — THE HERMETIC PRINCIPLE OF CORRESPONDENCE<br>The cosmic mechanics of Correspondence are expressed through Mercury's field today, reflecting the principles of Al-Thurayya (The Pleiades) and the Last Quarter moon. This principle demonstrates how the macrocosm and microcosm are interconnected. To apply this principle, consider the following concrete ritual applications:<br>1. At 06:10 AM CDT, write down a personal intention on a piece of paper, then burn it, symbolizing the release of energy into the universe.<br>2. At 06:25 AM CDT, stand in front of a mirror and gaze into your own eyes, acknowledging the correspondence between the inner and outer self.<br>3. At 06:35 AM CDT, take a few moments to align your breath with the rhythm of the universe, inhaling for 7 counts and exhaling for 3 counts, reflecting the harmony between the celestial and terrestrial realms.</p></div>
+  <div class="card section-content"><p>The Hermetic principle of Correspondence is expressed through Mercury's field today, which is amplified by the energies of Mansion 3 (Al-Thurayya) and the Last Quarter moon. This combination highlights the importance of knowledge, travel, and divine transmission in our lives. To apply the principle of Correspondence in a concrete way, the practitioner can execute the following physical actions before 06:40 AM CDT: <br>1. Write down a list of three things they want to learn or discover in the next quarter, and place it on their altar or a sacred space, symbolizing the corresponds between their desires and the universe's provision.<br>2. Take a short, 10-minute walk outside, paying attention to the sights, sounds, and smells of nature, and reflect on how these sensory experiences correspond to their inner state and the world around them.<br>3. Sit in stillness, focusing on their breath, and repeat the phrase "As above, so below" three times, feeling the correspondence between the celestial realms and their own inner world.</p></div>
 
   <!-- ═══ SECTION III: VOWEL CHANT ═══ -->
   <div class="section-header">
     <span class="section-numeral">III</span>
     <span class="section-title">THE VOWEL CHANT PROTOCOL &mdash; EEE</span>
   </div>
-  <div class="card section-content"><p>SECTION 3 — THE VOWEL CHANT PROTOCOL<br>To perform the EEE vowel chant, sit comfortably with your back straight, feet planted firmly on the ground, and hands placed on your knees. Inhale for a count of 4, filling your lungs completely, then hold your breath for a count of 2. Exhale for a count of 6, emitting a clear, high-pitched "EEE" sound. Repeat this sequence 7 times, focusing on the resonance in your throat chakra (Vishuddha). As you chant, pay attention to the sensation of the sound vibrating in your throat, and when you feel a subtle tingling or warmth, you will know that the activation is correct.</p></div>
+  <div class="card section-content"><p>To perform the EEE vowel chant, the practitioner should sit in a comfortable, upright position with their back straight, feet planted firmly on the ground, and hands placed on their knees. They should inhale for a count of 4, feeling the energy rise from their root chakra, hold their breath for a count of 4, and then exhale for a count of 6, allowing the sound "EEE" to emanate from their throat chakra. The pitch should be in the mid-register, and the chant should be repeated 7 times. The exact physical location of resonance is the throat chakra, and the inner sensation that signals correct activation is a subtle vibration or tingling sensation in the throat area. The practitioner should focus on the sensation of the sound resonating in their throat, feeling the energy build and expand with each repetition.</p></div>
 
   <!-- ═══ SECTION IV: MANTRA & MEDITATION ═══ -->
   <div class="section-header">
     <span class="section-numeral">IV</span>
     <span class="section-title">THE UNIFIED MANTRA &amp; MEDITATION</span>
   </div>
-  <div class="mantra-line">SECTION 4 — THE UNIFIED MANTRA & MEDITATION</div>
-  <div class="card section-content"><p>THOTH-HU, LORD OF THE WORDS, GUIDE ME THROUGH THE REALMS OF KNOWLEDGE<br>To meditate, find a quiet space and sit with your eyes closed, focusing on your breath. Inhale for a count of 4, hold for 2, and exhale for 6, repeating this pattern for 7 cycles. Visualize yourself standing in a vast, airy landscape, with the Last Quarter moon shining down. Imagine a gentle breeze carrying the whispers of the Pleiades, guiding you toward a great library of ancient wisdom. As you approach the library, feel the energy of the 741 Hz frequency resonating within you, amplifying your intention to access hidden knowledge. After 15 minutes of meditation, slowly open your eyes, and with a deliberate motion, seal your intention by touching your forehead, heart, and solar plexus.</p></div>
+  <div class="mantra-line">THE MANTRA: THOTH-HU INVOKES THE POWER OF DIVINE TRANSMISSION</div>
+  <div class="card section-content"><p>The meditation protocol begins with a 4-4-4 breathing pattern: inhale for 4 counts, hold for 4 counts, and exhale for 4 counts. The visualization sequence starts with an opening scene of a vast, starry night sky, followed by a middle journey through a winding, serpentine path that leads to a great temple dedicated to Thoth. The practitioner should visualize themselves entering the temple, where they meet the essence of Thoth, who imparts wisdom and knowledge. The integration phase involves reflecting on the insights received and how they can be applied in daily life. The closing seal is a repetition of the THOTH-HU mantra, followed by a brief, 1-minute silence. The 741 Hz frequency should be played in the background throughout the meditation, and the practitioner should focus on the sensation of the sound resonating in their cells.</p></div>
 
   <!-- VISUALIZATION GATEWAY -->
   <div class="section-header">
     <span class="section-numeral">&#9790;</span>
     <span class="section-title">VISUALIZATION GATEWAY</span>
   </div>
-  <div class="gateway-card"><p>SECTION 5 — VISUALIZATION GATEWAY<br>Imagine yourself standing in a vast, arid terrain, with the Last Quarter moon casting an eerie glow on the sandy dunes. The air is crisp and cool, with a hint of mercury's swift and agile energy. As you breathe in, the scent of frankincense and myrrh fills your lungs, transporting you to a realm of ancient wisdom. Suddenly, a figure emerges on the horizon, embodying the essence of Al-Thurayya (The Pleiades). This being approaches you, carrying a staff adorned with seven glittering stars, and imparts a message of cosmic knowledge and divine transmission.</p></div>
+  <div class="gateway-card"><p>The inner landscape for the visualization gateway is a vast, arid desert landscape under the light of the Last Quarter moon. The terrain is aligned to Mercury and Air, with sandy dunes stretching as far as the eye can see, and a few scattered rocks and withered trees dotting the horizon. The quality of the light is cool and silvery, casting long shadows across the sand. As the practitioner journeys through this landscape, they come across a symbolic representation of the essence of Mansion 3 (The Pleiades) – a great, glowing star that pulsates with an otherworldly energy. The star speaks to the practitioner in a voice that echoes in their mind, imparting knowledge and wisdom related to travel, divine transmission, and the mysteries of the universe.</p></div>
 
   <!-- HALL OF AMENTI -->
   <div class="section-header">
     <span class="section-numeral">&#9993;</span>
     <span class="section-title">HALL OF AMENTI &mdash; THE MERCURY TEMPLE</span>
   </div>
-  <div class="gateway-card"><p>SECTION 6 — HALL OF AMENTI: THE MERCURY TEMPLE<br>The Mercury temple within the Hall of Amenti is constructed from polished silver stone, with intricate hieroglyphics depicting the swift messenger god. The air is filled with the sweet scent of lavender and the soft hum of celestial music, as the sound of gentle wind chimes resonates through the halls. The atmosphere is alive with the vibrant energy of mental clarity and swift communication, inviting the practitioner to embody the qualities of the celestial messenger.</p></div>
+  <div class="gateway-card"><p>The Mercury temple within the Hall of Amenti is constructed from gleaming white marble and adorned with intricate, swirling patterns that evoke the mysteries of the cosmos. The ambient sounds are a soft, gentle hum, like the quiet buzzing of a harp string, and the scent is that of sandalwood and myrrh, carried on the breeze. The atmospheric character of the temple is one of clarity and precision, with a sense of mental acuity and focus that sharpens the mind and quickens the intellect. The walls of the temple are lined with rows of gleaming, crystal orbs that reflect and amplify the light of the Mercury sphere, casting a kaleidoscope of colors across the floor.</p></div>
 
   <!-- ASTRAL SHIELD & SEAL -->
   <div class="seal-row">
@@ -667,19 +702,19 @@ body {
   <div class="card">
       <div class="oracle-section">
         <div class="oracle-num">I. ALIGNMENT ANALYSIS</div>
-        <div class="oracle-text">The celestial convergence of Mercury, Saturn, and Mars, combined with the Last Quarter moon and the influence of Al-Thurayya, creates a complex vector of mental clarity, cosmic knowledge, and swift communication.</div>
+        <div class="oracle-text">The celestial mechanics today, with Mercury as the day ruler and Saturn as the planetary hour ruler, combined with the Last Quarter moon and the influence of Mansion 3 (Al-Thurayya), create a complex operative vector that demands attention to knowledge, travel, and divine transmission.</div>
       </div>
       <div class="oracle-section">
         <div class="oracle-num">II. FIELD DIRECTIVE</div>
-        <div class="oracle-text">This specific convergence demands that the practitioner embody the qualities of the celestial messenger, using their mental acuity and agility to navigate the realms of knowledge and transmission.</div>
+        <div class="oracle-text">This specific convergence demands that the practitioner focus on mental clarity, precision, and the pursuit of knowledge, using the energies of Mercury and the Pleiades to amplify their intellectual faculties and gain insight into the mysteries of the universe.</div>
       </div>
       <div class="oracle-section">
         <div class="oracle-num">III. RITUAL DIRECTIVE</div>
-        <div class="oracle-text">At exactly 06:40 AM CDT, face east with your feet shoulder-width apart, and with your arms raised to the sky, proclaim your intention to embody the frequencies of the day.</div>
+        <div class="oracle-text">At exactly 06:40 AM CDT, the practitioner should face east, stand with their feet shoulder-width apart, and raise their arms to the sky, proclaiming their intention to embody the principles of self-mastery and creation.</div>
       </div>
       <div class="oracle-section">
         <div class="oracle-num">IV. TRANSMISSION</div>
-        <div class="oracle-text transmission-text">THOTH-HU, as the lord of the words, guides me through the realms of knowledge, illuminating the path to self-awareness and cosmic understanding.</div>
+        <div class="oracle-text transmission-text">THOTH-HU activates the codes of divine transmission, allowing the practitioner to receive wisdom and knowledge from the celestial realms and integrate it into their daily life, aligning themselves with the principles of Correspondence and the mysteries of the universe.</div>
       </div></div>
 
 </div><!-- /container -->
@@ -687,8 +722,36 @@ body {
 <!-- FOOTER -->
 <div class="footer">
   <div class="footer-title">Hermetic Oracle Engine &bull; Unified Daily Synthesis</div>
-  <div class="footer-time">Generated: July 8, 2026 at 09:24 AM CDT</div>
+  <div class="footer-time">Generated: July 8, 2026 at 09:48 AM CDT</div>
 </div>
+
+<script>
+(function(){
+  var SCHED = [{i:0,s:1783510841605,e:1783515024986,p:"Mercury",t:"Mind & Communication"},{i:1,s:1783515024986,e:1783519208367,p:"Moon",t:"Rest & Intuition"},{i:2,s:1783519208367,e:1783523391747,p:"Saturn",t:"Structure & Discipline"},{i:3,s:1783523391747,e:1783527575128,p:"Jupiter",t:"Growth & Gratitude"},{i:4,s:1783527575128,e:1783531758509,p:"Mars",t:"Energy & Courage"},{i:5,s:1783531758509,e:1783535941889,p:"Sun",t:"Vitality & Purpose"},{i:6,s:1783535941889,e:1783540125270,p:"Venus",t:"Love & Beauty"},{i:7,s:1783540125270,e:1783544308651,p:"Mercury",t:"Mind & Communication"},{i:8,s:1783544308651,e:1783548492031,p:"Moon",t:"Rest & Intuition"},{i:9,s:1783548492031,e:1783552675412,p:"Saturn",t:"Structure & Discipline"},{i:10,s:1783552675412,e:1783556858793,p:"Jupiter",t:"Growth & Gratitude"},{i:11,s:1783556858793,e:1783561042174,p:"Mars",t:"Energy & Courage"},{i:12,s:1783561042174,e:1783564061184,p:"Sun",t:"Vitality & Purpose"},{i:13,s:1783564061184,e:1783567080195,p:"Venus",t:"Love & Beauty"},{i:14,s:1783567080195,e:1783570099206,p:"Mercury",t:"Mind & Communication"},{i:15,s:1783570099206,e:1783573118217,p:"Moon",t:"Rest & Intuition"},{i:16,s:1783573118217,e:1783576137228,p:"Saturn",t:"Structure & Discipline"},{i:17,s:1783576137228,e:1783579156239,p:"Jupiter",t:"Growth & Gratitude"},{i:18,s:1783579156239,e:1783582175249,p:"Mars",t:"Energy & Courage"},{i:19,s:1783582175249,e:1783585194260,p:"Sun",t:"Vitality & Purpose"},{i:20,s:1783585194260,e:1783588213271,p:"Venus",t:"Love & Beauty"},{i:21,s:1783588213271,e:1783591232282,p:"Mercury",t:"Mind & Communication"},{i:22,s:1783591232282,e:1783594251293,p:"Moon",t:"Rest & Intuition"},{i:23,s:1783594251293,e:1783597270304,p:"Saturn",t:"Structure & Discipline"}];
+  function upd(){
+    var now = Date.now(), cur = null, i, el;
+    for (i = 0; i < SCHED.length; i++){
+      el = document.getElementById('hr-' + SCHED[i].i);
+      if (el) el.classList.remove('current-hour');
+      if (now >= SCHED[i].s && now < SCHED[i].e) cur = SCHED[i];
+    }
+    var banner = document.getElementById('now-hour');
+    if (cur){
+      el = document.getElementById('hr-' + cur.i);
+      if (el) el.classList.add('current-hour');
+      var mins = Math.max(0, Math.round((cur.e - now) / 60000));
+      if (banner) banner.innerHTML = '\u25CF Now: <strong>' + cur.p + '</strong> hour \u00B7 ' + cur.t + ' \u00B7 ' + mins + ' min left';
+      var num = cur.i < 12 ? cur.i + 1 : cur.i - 11;
+      var per = cur.i < 12 ? 'Day' : 'Night';
+      var pr = document.getElementById('ph-ruler'); if (pr) pr.textContent = 'Ruler: ' + cur.p;
+      var pd = document.getElementById('ph-detail'); if (pd) pd.textContent = 'Hour #' + num + ' \u00B7 ' + per + ' \u00B7 ' + mins + ' min remaining';
+    } else if (banner){
+      banner.textContent = 'Between generation cycles \u2014 reload after the next daily run.';
+    }
+  }
+  upd(); setInterval(upd, 30000);
+})();
+</script>
 
 </body>
 </html>
