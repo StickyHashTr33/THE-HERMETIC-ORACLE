@@ -175,6 +175,10 @@ COMPANION = os.environ.get('COMPANION_NAME', 'Merlin').strip()
 PLANET_EMOJI = {'Saturn': '🪐', 'Jupiter': '♃', 'Mars': '🔥', 'Sun': '☀️',
                 'Venus': '💛', 'Mercury': '📜', 'Moon': '🌙'}
 
+PLANET_COLOR = {'Saturn': '#8a86b8', 'Jupiter': '#5a8fd6', 'Mars': '#d6564a',
+                'Sun': '#f0c040', 'Venus': '#5fc98a', 'Mercury': '#e08a3c',
+                'Moon': '#b8c0d6'}
+
 LIFE_PRACTICES = {
     'Saturn':  {'title': 'Structure & Discipline', 'freq': '396 Hz',
                 'vowel': 'Omega (oh) — deep and slow',
@@ -535,6 +539,20 @@ body {
 .time-row.primary .time-label { color: var(--gold); }
 .time-row.primary .time-value { color: var(--gold-bright); }
 .hour-practice { color: var(--muted); font-family: 'Raleway', sans-serif; font-size: 0.82em; }
+.pdot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 4px currentColor; }
+.hour-row { transition: background 0.3s, border-color 0.3s; border-left: 2px solid transparent; padding-left: 6px; }
+.hour-row.current-hour {
+  background: linear-gradient(90deg, rgba(240,192,64,0.14), rgba(240,192,64,0.02));
+  border-left: 2px solid var(--gold-bright);
+}
+.hour-row.current-hour .time-value,
+.hour-row.current-hour .hour-practice { color: var(--gold-bright); }
+.now-banner {
+  margin: 0.5rem 0 0.2rem; padding: 0.55rem 0.8rem; border-radius: 6px;
+  background: rgba(240,192,64,0.08); border: 1px solid var(--gold-dim);
+  color: var(--gold-bright); font-family: 'Cinzel', serif; font-size: 0.92rem;
+  text-align: center; letter-spacing: 0.02em;
+}
 
 /* ─── SECTION HEADERS ─────────────────────────────────── */
 .section-header {
@@ -1003,6 +1021,7 @@ Convergence Score: {d['convergence']}/100 — {d['convergence_tier']}
 Primary Activation Window: {sunrise}{ov_text}
 
 Generate EXACTLY 7 sections separated by the delimiter |SPLIT| with NO text before the first section.
+The "SECTION N —" lines below are labels telling you what each section must contain — do NOT reproduce them or write any title/header. Output only the body content for each section.
 
 SECTION 1 — THE DAY'S ESOTERIC MATHEMATICS
 Deep analysis of calendar number {cal} ({cal_sm[0]}) through Five Percenter Supreme Mathematics. Then base number {base} ({base_sm[0]}). End with EXACTLY HOW to embody both frequencies today: specific physical ritual actions tied to timing relative to sunrise at {sunrise}. NOT generic advice. 180+ words.
@@ -1048,12 +1067,18 @@ def call_groq(prompt, api_key):
     resp.raise_for_status()
     return resp.json()['choices'][0]['message']['content'].strip()
 
+def _strip_section_header(text):
+    # Groq sometimes echoes the "SECTION N — TITLE" instruction line back into
+    # its answer; the page already draws that header, so drop the duplicate.
+    return re.sub(r'^\s*SECTION\s+\d+\s*[—–:-][^\n]*\n?', '', text,
+                  count=1, flags=re.IGNORECASE).strip()
+
 def parse_sections(text):
     parts  = text.split('|SPLIT|')
     labels = ['math', 'principle', 'vowel', 'mantra', 'visualization', 'hall', 'oracle']
     result = {}
     for i, label in enumerate(labels):
-        result[label] = parts[i].strip() if i < len(parts) else ''
+        result[label] = _strip_section_header(parts[i]) if i < len(parts) else ''
     return result
 
 def text_to_html(text):
@@ -1186,15 +1211,24 @@ def generate_html(data, sections, generated_at):
     # ── Planetary-hour schedule (from compass) ────────────────────────────────
     schedule = data['hour_schedule']
 
-    def _hour_row(r):
-        emoji = PLANET_EMOJI.get(r['planet'], '')
+    def _hour_row(idx, r):
+        color = PLANET_COLOR.get(r['planet'], 'var(--muted)')
         t     = f"{fmt(r['start'], '%-I:%M %p')} – {fmt(r['end'], '%-I:%M %p')}"
-        return (f'<div class="time-row"><span class="time-label">{emoji} {t}</span>'
+        return (f'<div class="time-row hour-row" id="hr-{idx}">'
+                f'<span class="time-label"><span class="pdot" style="background:{color}"></span>{t}</span>'
                 f'<span class="time-value">{r["planet"]} · '
                 f'<span class="hour-practice">{r["practice"]["title"]}</span></span></div>')
 
-    day_rows   = ''.join(_hour_row(r) for r in schedule if r['period'] == 'Day')
-    night_rows = ''.join(_hour_row(r) for r in schedule if r['period'] == 'Night')
+    # schedule is ordered [12 day, 12 night]; keep that global index for JS
+    day_rows   = ''.join(_hour_row(i, r) for i, r in enumerate(schedule) if r['period'] == 'Day')
+    night_rows = ''.join(_hour_row(i, r) for i, r in enumerate(schedule) if r['period'] == 'Night')
+
+    # Live-clock data: epoch millis so the browser can compute the current hour
+    schedule_js = '[' + ','.join(
+        '{{i:{i},s:{s},e:{e},p:"{p}",t:"{t}"}}'.format(
+            i=i, s=int(r['start'].timestamp() * 1000), e=int(r['end'].timestamp() * 1000),
+            p=r['planet'], t=r['practice']['title'].replace('"', ''))
+        for i, r in enumerate(schedule)) + ']'
 
     def _key_hours(planet):
         spans = [f"{fmt(r['start'], '%-I:%M %p')}–{fmt(r['end'], '%-I:%M %p')}"
@@ -1208,6 +1242,37 @@ def generate_html(data, sections, generated_at):
         f'<span class="time-value">{_key_hours("Venus")}</span></div>'
         f'<div class="time-row"><span class="time-label">{PLANET_EMOJI["Saturn"]} {saturn_label}</span>'
         f'<span class="time-value">{_key_hours("Saturn")}</span></div>')
+
+    # ── Live current-hour script (plain string; no f-string brace escaping) ────
+    oracle_js = """
+<script>
+(function(){
+  var SCHED = __SCHED__;
+  function upd(){
+    var now = Date.now(), cur = null, i, el;
+    for (i = 0; i < SCHED.length; i++){
+      el = document.getElementById('hr-' + SCHED[i].i);
+      if (el) el.classList.remove('current-hour');
+      if (now >= SCHED[i].s && now < SCHED[i].e) cur = SCHED[i];
+    }
+    var banner = document.getElementById('now-hour');
+    if (cur){
+      el = document.getElementById('hr-' + cur.i);
+      if (el) el.classList.add('current-hour');
+      var mins = Math.max(0, Math.round((cur.e - now) / 60000));
+      if (banner) banner.innerHTML = '\\u25CF Now: <strong>' + cur.p + '</strong> hour \\u00B7 ' + cur.t + ' \\u00B7 ' + mins + ' min left';
+      var num = cur.i < 12 ? cur.i + 1 : cur.i - 11;
+      var per = cur.i < 12 ? 'Day' : 'Night';
+      var pr = document.getElementById('ph-ruler'); if (pr) pr.textContent = 'Ruler: ' + cur.p;
+      var pd = document.getElementById('ph-detail'); if (pd) pd.textContent = 'Hour #' + num + ' \\u00B7 ' + per + ' \\u00B7 ' + mins + ' min remaining';
+    } else if (banner){
+      banner.textContent = 'Between generation cycles \\u2014 reload after the next daily run.';
+    }
+  }
+  upd(); setInterval(upd, 30000);
+})();
+</script>
+""".replace('__SCHED__', schedule_js)
 
     # Day-ruler practice highlight
     rp = PRACTICES[ruler]
@@ -1223,6 +1288,36 @@ def generate_html(data, sections, generated_at):
         f'<div class="param-item" style="grid-column:1/-1"><div class="param-label">Affirmation</div>'
         f'<div class="param-value" style="font-style:italic">&ldquo;{rp["affirm"]}&rdquo;</div></div>'
         f'</div>')
+
+    # ── Patterns over time (from history log) ─────────────────────────────────
+    hs = data.get('history_summary')
+    if hs and hs['days'] >= 1:
+        phase_rows = ''.join(
+            f'<div class="time-row"><span class="time-label">{name}</span>'
+            f'<span class="time-value">{cnt}</span></div>'
+            for name, cnt in hs['phase_dist'])
+        patterns_html = f"""
+  <div class="card">
+    <div class="card-title">Patterns &bull; Looking Back to Look Ahead</div>
+    <div class="param-grid">
+      <div class="param-item"><div class="param-label">Days Recorded</div>
+        <div class="param-value">{hs['days']}</div></div>
+      <div class="param-item"><div class="param-label">Current Streak</div>
+        <div class="param-value">{hs['streak']} day{'s' if hs['streak'] != 1 else ''}</div></div>
+      <div class="param-item"><div class="param-label">Avg Convergence</div>
+        <div class="param-value">{hs['avg_conv']} / 100</div></div>
+      <div class="param-item"><div class="param-label">Peak Convergence</div>
+        <div class="param-value">{hs['max_conv']} / 100</div>
+        <div class="param-note">{hs['max_date']}</div></div>
+      <div class="param-item"><div class="param-label">Most Common Tier</div>
+        <div class="param-value">{hs['top_tier']}</div></div>
+    </div>
+    <div class="card-title" style="margin-top:1rem">Moon Phase Distribution</div>
+    {phase_rows}
+    <div class="param-note" style="margin-top:0.7rem">Grows richer each day. Full data: <code>docs/data/history.jsonl</code></div>
+  </div>"""
+    else:
+        patterns_html = ''
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1269,8 +1364,8 @@ def generate_html(data, sections, generated_at):
       <div class="pillar-num">PILLAR II</div>
       <div class="pillar-icon">&#8987;</div>
       <div class="pillar-name">PLANETARY HOUR</div>
-      <div class="pillar-main">Ruler: {ph['ruler']}</div>
-      <div class="pillar-detail">Hour #{ph['hour_num']} &bull; {ph['period']} &bull; {ph['minutes_remaining']} min remaining</div>
+      <div class="pillar-main" id="ph-ruler">Ruler: {ph['ruler']}</div>
+      <div class="pillar-detail" id="ph-detail">Hour #{ph['hour_num']} &bull; {ph['period']} &bull; {ph['minutes_remaining']} min remaining</div>
       <div class="pillar-sub">Day ruler: {ph['day_ruler']}</div>
     </div>
     <div class="pillar">
@@ -1368,6 +1463,7 @@ def generate_html(data, sections, generated_at):
   <!-- PLANETARY HOURS SCHEDULE (compass) -->
   <div class="card">
     <div class="card-title">{SCHEDULE_TITLE}</div>
+    <div id="now-hour" class="now-banner">Locating current hour&hellip;</div>
     <div class="two-col-row" style="margin-top:0.4rem">
       <div>
         <div class="param-label" style="margin-bottom:0.4rem">&#9728; Day Hours</div>
@@ -1384,6 +1480,7 @@ def generate_html(data, sections, generated_at):
     {ruler_practice_html}
     <div class="param-note" style="margin-top:0.8rem;text-align:center">{SCHEDULE_FOOTER}</div>
   </div>
+{patterns_html}
 
   <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
   <div class="section-header">
@@ -1457,7 +1554,7 @@ def generate_html(data, sections, generated_at):
   <div class="footer-title">Hermetic Oracle Engine &bull; Unified Daily Synthesis</div>
   <div class="footer-time">Generated: {gen_str}</div>
 </div>
-
+{oracle_js}
 </body>
 </html>"""
 
@@ -1465,6 +1562,67 @@ def generate_html(data, sections, generated_at):
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
+
+def append_history(record, path='docs/data/history.jsonl'):
+    """Append one record per day to a JSONL log (deduped by date so same-day
+    re-runs overwrite rather than duplicate). Returns all rows, oldest first."""
+    import json
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    rows = []
+    if p.exists():
+        for line in p.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except Exception:
+                continue
+            if r.get('date') != record['date']:
+                rows.append(r)
+    rows.append(record)
+    rows.sort(key=lambda r: r.get('date', ''))
+    p.write_text('\n'.join(json.dumps(r, ensure_ascii=False) for r in rows) + '\n',
+                 encoding='utf-8')
+    print(f'[Oracle] History: {len(rows)} day(s) logged -> {path}')
+    return rows
+
+
+def summarize_history(rows):
+    """Compact stats for the Patterns card. Safe on tiny/empty data."""
+    from collections import Counter
+    if not rows:
+        return None
+    convs = [r['convergence'] for r in rows if isinstance(r.get('convergence'), (int, float))]
+    tiers  = Counter(r.get('tier') for r in rows if r.get('tier'))
+    phases = Counter(r.get('moon_phase') for r in rows if r.get('moon_phase'))
+    best   = max(rows, key=lambda r: r.get('convergence', 0))
+
+    # current streak of consecutive calendar days ending on the latest entry
+    streak, prev = 0, None
+    for r in reversed(rows):
+        try:
+            d = datetime.datetime.strptime(r['date'], '%Y-%m-%d').date()
+        except Exception:
+            break
+        if prev is None or (prev - d).days == 1:
+            streak += 1; prev = d
+        elif (prev - d).days == 0:
+            continue
+        else:
+            break
+
+    return {
+        'days':       len(rows),
+        'avg_conv':   round(sum(convs) / len(convs), 1) if convs else 0,
+        'max_conv':   best.get('convergence', 0),
+        'max_date':   best.get('date', ''),
+        'streak':     streak,
+        'top_tier':   tiers.most_common(1)[0][0] if tiers else '—',
+        'phase_dist': phases.most_common(4),
+    }
+
 
 def main():
     api_key = os.environ.get('GROQ_API_KEY', '')
@@ -1499,6 +1657,26 @@ def main():
     score, tier, breakdown = calculate_convergence(lunar, ph, sky, cal_num, overrides)
     print(f'[Oracle] Convergence: {score}/100 ({tier})')
 
+    # ── Append today's record + summarize history ─────────────────────────────
+    history_record = {
+        'date':        now_local.strftime('%Y-%m-%d'),
+        'weekday':     now_local.strftime('%A'),
+        'day_ruler':   ph['day_ruler'],
+        'hour_ruler':  ph['ruler'],
+        'convergence': score,
+        'tier':        tier,
+        'moon_phase':  lunar['phase'],
+        'moon_illum':  round(lunar['illumination'], 1),
+        'moon_age':    round(lunar['age'], 1),
+        'mansion':     lunar['mansion'][0],
+        'cal_num':     cal_num,
+        'base_num':    base_num,
+        'focus':       FOCUS,
+        'overrides':   [o['name'] for o in overrides],
+    }
+    history_rows    = append_history(history_record)
+    history_summary = summarize_history(history_rows)
+
     data = {
         'now_local':        now_local,
         'date_str':         date_str,
@@ -1506,6 +1684,7 @@ def main():
         'lunar':            lunar,
         'planetary_hour':   ph,
         'hour_schedule':    hour_schedule,
+        'history_summary':  history_summary,
         'sky':              sky,
         'numerology':       {'calendar': cal_num, 'base': base_num},
         'overrides':        overrides,
