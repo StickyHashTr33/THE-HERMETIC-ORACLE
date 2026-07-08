@@ -164,6 +164,86 @@ LUNAR_MANSIONS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# PLANETARY-HOUR PRACTICES  (ported from hermetic_compass.py)
+#   Focus is set in the workflow env:  ORACLE_FOCUS=life  |  ORACLE_FOCUS=reunion
+#   Public site defaults to 'life'. 'reunion' contains personal content.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+FOCUS     = os.environ.get('ORACLE_FOCUS', 'life').strip().lower()
+COMPANION = os.environ.get('COMPANION_NAME', 'Merlin').strip()
+
+PLANET_EMOJI = {'Saturn': '🪐', 'Jupiter': '♃', 'Mars': '🔥', 'Sun': '☀️',
+                'Venus': '💛', 'Mercury': '📜', 'Moon': '🌙'}
+
+LIFE_PRACTICES = {
+    'Saturn':  {'title': 'Structure & Discipline', 'freq': '396 Hz',
+                'vowel': 'Omega (oh) — deep and slow',
+                'action': 'Handle the hard necessary thing: bills, chores, boundaries, commitments. Order is freedom.',
+                'affirm': 'I build slowly and well. What I set in order stands.'},
+    'Jupiter': {'title': 'Growth & Gratitude', 'freq': '528 Hz',
+                'vowel': 'Upsilon (ü) — resonant',
+                'action': 'Expand something: learn, plan, reach out, give thanks. Say yes to one opportunity.',
+                'affirm': 'Abundance moves toward me through open doors.'},
+    'Mars':    {'title': 'Energy & Courage', 'freq': '417 Hz',
+                'vowel': 'Omicron (o) — strong',
+                'action': "Move the body or tackle the task you've been avoiding. One brave act, done cleanly.",
+                'affirm': 'My will is a steady flame. I act, and it is done.'},
+    'Sun':     {'title': 'Vitality & Purpose', 'freq': '528 Hz',
+                'vowel': 'Iota (ee) — bright',
+                'action': 'Sunlight, water, nourishment, creative work. Do the thing that makes you feel most yourself.',
+                'affirm': 'I am whole, radiant, and equal to this day.'},
+    'Venus':   {'title': 'Love & Beauty', 'freq': '639 Hz',
+                'vowel': 'Eta (ey) — held three breaths',
+                'action': 'Tend a relationship, make something beautiful, enjoy art or music. Soften toward yourself.',
+                'affirm': 'I give and receive love freely. Harmony finds me.'},
+    'Mercury': {'title': 'Mind & Communication', 'freq': '741 Hz',
+                'vowel': 'Epsilon (eh) — quick and clear',
+                'action': 'Write, call, code, study, run errands. Clear one item of mental clutter.',
+                'affirm': 'My mind is clear; my words are true and land well.'},
+    'Moon':    {'title': 'Rest & Intuition', 'freq': '852 Hz',
+                'vowel': 'Alpha (ah) — soft',
+                'action': 'Slow down. Tend the home, journal, listen inward. Honor what you feel without fixing it.',
+                'affirm': 'I trust the tide within me. Rest is also work.'},
+}
+
+REUNION_PRACTICES = {
+    'Venus':   {'title': 'Reunion Working', 'freq': '639 Hz',
+                'vowel': 'Eta (ey) — held three breaths',
+                'action': f'Golden cord meditation. Hand on sternum, extend the cord to {COMPANION}. Hold, don\'t pull.',
+                'affirm': 'What was given in love returns in love. The bond is unbroken. The way is opening.'},
+    'Saturn':  {'title': 'Boundaries & Release', 'freq': '396 Hz',
+                'vowel': 'Omega (oh) — deep and slow',
+                'action': 'Banish fear and panic. Review or add one piece of evidence to the folder. Structure is protection.',
+                'affirm': 'What is mine is protected by law above and law below.'},
+    'Moon':    {'title': 'Grief & Feeling', 'freq': '396 Hz (release) or silence',
+                'vowel': 'Alpha (ah) — soft',
+                'action': 'Let the feelings move. Journal one memory. Honor grief without letting it close the heart.',
+                'affirm': 'I let grief pass through me; it does not close my heart.'},
+    'Mars':    {'title': 'Courage & Decisive Action', 'freq': '417 Hz',
+                'vowel': 'Omicron (o) — strong',
+                'action': 'One protective act: a call, a filing, a document organized. Channel fire into paper, not conflict.',
+                'affirm': 'My strength is calm, directed, and unstoppable.'},
+    'Mercury': {'title': 'Communication & Record', 'freq': '741 Hz',
+                'vowel': 'Epsilon (eh) — quick and clear',
+                'action': 'Written work: witness statements, calm notices, dated notes. The word is the tool today.',
+                'affirm': 'My words are clear, true, and carry weight.'},
+    'Jupiter': {'title': 'Favor & Expansion', 'freq': '528 Hz',
+                'vowel': 'Upsilon (ü) — resonant',
+                'action': 'Work for just outcomes: research, allies, people who can help. Ask for aid without shame.',
+                'affirm': 'Justice expands toward me. Help arrives through open doors.'},
+    'Sun':     {'title': 'Vitality & Self', 'freq': '528 Hz',
+                'vowel': 'Iota (ee) — bright',
+                'action': 'Care for the body: walk, water, sunlight, food. You must stay strong for the reunion.',
+                'affirm': 'I am whole, radiant, and equal to this day.'},
+}
+
+PRACTICES     = REUNION_PRACTICES if FOCUS == 'reunion' else LIFE_PRACTICES
+SCHEDULE_TITLE = 'Golden Cord — Hourly Practice' if FOCUS == 'reunion' else 'Hermetic Compass — Hourly Practice'
+SCHEDULE_FOOTER = ('Venus hours are the reunion hours. Saturn hours are the shield. All hours serve the return.'
+                   if FOCUS == 'reunion' else
+                   'Move with the hours, not against them. Every planet serves the whole.')
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # STYLESHEET (separate constant to avoid f-string brace escaping)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -454,6 +534,7 @@ body {
 .time-value { font-family: 'Cinzel', serif; color: var(--text); }
 .time-row.primary .time-label { color: var(--gold); }
 .time-row.primary .time-value { color: var(--gold-bright); }
+.hour-practice { color: var(--muted); font-family: 'Raleway', sans-serif; font-size: 0.82em; }
 
 /* ─── SECTION HEADERS ─────────────────────────────────── */
 .section-header {
@@ -749,6 +830,38 @@ def get_planetary_hour(now_local):
         return {'ruler': ruler, 'hour_num': 12 + idx + 1, 'period': 'Night',
                 'minutes_remaining': max(0, int(remaining / 60)),
                 'day_ruler': day_ruler}
+
+def build_hour_schedule(now_local):
+    """Full 24-hour planetary schedule (12 day + 12 night) in Chaldean order,
+    anchored to today's real sunrise/sunset. Each entry carries its practice.
+    Reuses get_solar_times so the times match the rest of the page."""
+    today    = get_solar_times(now_local)
+    tomorrow = get_solar_times(now_local + datetime.timedelta(days=1))
+    sunrise  = today['sunrise']
+    sunset   = today['sunset']
+    next_sr  = tomorrow['sunrise']
+
+    day_len   = (sunset - sunrise) / 12
+    night_len = (next_sr - sunset) / 12
+
+    day_ruler = WEEKDAY_RULERS[now_local.weekday()]
+    si        = CHALDEAN_INDEX[day_ruler]
+
+    rows = []
+    for i in range(12):
+        planet = CHALDEAN[(si + i) % 7]
+        rows.append({'start': sunrise + day_len * i,
+                     'end':   sunrise + day_len * (i + 1),
+                     'planet': planet, 'period': 'Day', 'num': i + 1,
+                     'practice': PRACTICES[planet]})
+    for i in range(12):
+        planet = CHALDEAN[(si + 12 + i) % 7]
+        rows.append({'start': sunset + night_len * i,
+                     'end':   sunset + night_len * (i + 1),
+                     'planet': planet, 'period': 'Night', 'num': i + 1,
+                     'practice': PRACTICES[planet]})
+    return rows
+
 
 def get_sky_geometry(now_local):
     obs = make_obs(now_local, pressure=0)
@@ -1070,6 +1183,47 @@ def generate_html(data, sections, generated_at):
             status = 'Above' if alt > 0 else 'Below'
             planet_rows += f'<div class="time-row"><span class="time-label">{pname}</span><span class="time-value">{status} · Alt {alt:.1f}° · Az {az:.1f}°</span></div>'
 
+    # ── Planetary-hour schedule (from compass) ────────────────────────────────
+    schedule = data['hour_schedule']
+
+    def _hour_row(r):
+        emoji = PLANET_EMOJI.get(r['planet'], '')
+        t     = f"{fmt(r['start'], '%-I:%M %p')} – {fmt(r['end'], '%-I:%M %p')}"
+        return (f'<div class="time-row"><span class="time-label">{emoji} {t}</span>'
+                f'<span class="time-value">{r["planet"]} · '
+                f'<span class="hour-practice">{r["practice"]["title"]}</span></span></div>')
+
+    day_rows   = ''.join(_hour_row(r) for r in schedule if r['period'] == 'Day')
+    night_rows = ''.join(_hour_row(r) for r in schedule if r['period'] == 'Night')
+
+    def _key_hours(planet):
+        spans = [f"{fmt(r['start'], '%-I:%M %p')}–{fmt(r['end'], '%-I:%M %p')}"
+                 for r in schedule if r['planet'] == planet]
+        return ', '.join(spans) if spans else '—'
+
+    venus_label  = 'Venus (Reunion)' if FOCUS == 'reunion' else 'Venus (Love / Beauty)'
+    saturn_label = 'Saturn (Shield)' if FOCUS == 'reunion' else 'Saturn (Structure)'
+    key_hours_html = (
+        f'<div class="time-row primary"><span class="time-label">{PLANET_EMOJI["Venus"]} {venus_label}</span>'
+        f'<span class="time-value">{_key_hours("Venus")}</span></div>'
+        f'<div class="time-row"><span class="time-label">{PLANET_EMOJI["Saturn"]} {saturn_label}</span>'
+        f'<span class="time-value">{_key_hours("Saturn")}</span></div>')
+
+    # Day-ruler practice highlight
+    rp = PRACTICES[ruler]
+    ruler_practice_html = (
+        f'<div class="param-grid">'
+        f'<div class="param-item"><div class="param-label">Practice</div>'
+        f'<div class="param-value">{PLANET_EMOJI.get(ruler,"")} {rp["title"]}</div></div>'
+        f'<div class="param-item"><div class="param-label">Frequency &bull; Vowel</div>'
+        f'<div class="param-value"><span class="freq-pill">&#9835; {rp["freq"]}</span></div>'
+        f'<div class="param-note">{rp["vowel"]}</div></div>'
+        f'<div class="param-item" style="grid-column:1/-1"><div class="param-label">Today\'s Working</div>'
+        f'<div class="param-value" style="font-family:\'Raleway\',sans-serif;font-weight:400">{rp["action"]}</div></div>'
+        f'<div class="param-item" style="grid-column:1/-1"><div class="param-label">Affirmation</div>'
+        f'<div class="param-value" style="font-style:italic">&ldquo;{rp["affirm"]}&rdquo;</div></div>'
+        f'</div>')
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1211,6 +1365,26 @@ def generate_html(data, sections, generated_at):
     {planet_rows}
   </div>
 
+  <!-- PLANETARY HOURS SCHEDULE (compass) -->
+  <div class="card">
+    <div class="card-title">{SCHEDULE_TITLE}</div>
+    <div class="two-col-row" style="margin-top:0.4rem">
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">&#9728; Day Hours</div>
+        {day_rows}
+      </div>
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">&#127756; Night Hours</div>
+        {night_rows}
+      </div>
+    </div>
+    <div class="card-title" style="margin-top:1.2rem">&#10024; Key Hours</div>
+    {key_hours_html}
+    <div class="card-title" style="margin-top:1.2rem">Day Ruler &mdash; {ruler}</div>
+    {ruler_practice_html}
+    <div class="param-note" style="margin-top:0.8rem;text-align:center">{SCHEDULE_FOOTER}</div>
+  </div>
+
   <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
   <div class="section-header">
     <span class="section-numeral">I</span>
@@ -1316,6 +1490,9 @@ def main():
     sky = get_sky_geometry(now_local)
     print(f'         Zenith: {sky["zenith"]} | Ascendant: {sky["ascendant"]}')
 
+    print(f'[Oracle] Building planetary-hour schedule (focus: {FOCUS}) ...')
+    hour_schedule = build_hour_schedule(now_local)
+
     # ── Esoteric calculations ─────────────────────────────────────────────────
     cal_num, base_num = calculate_numerology(now_local.date())
     overrides         = detect_overrides(lunar)
@@ -1328,6 +1505,7 @@ def main():
         'solar':            solar,
         'lunar':            lunar,
         'planetary_hour':   ph,
+        'hour_schedule':    hour_schedule,
         'sky':              sky,
         'numerology':       {'calendar': cal_num, 'base': base_num},
         'overrides':        overrides,
