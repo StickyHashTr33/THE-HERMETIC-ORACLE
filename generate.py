@@ -172,6 +172,15 @@ LUNAR_MANSIONS = [
 FOCUS     = os.environ.get('ORACLE_FOCUS', 'life').strip().lower()
 COMPANION = os.environ.get('COMPANION_NAME', 'Merlin').strip()
 
+# Natal chart config — kept out of code so birth data stays private.
+#   BIRTH_DATETIME='1981-05-17 13:31'  BIRTH_TZ='America/Chicago'
+# Set as a GitHub secret => natal appears on the public page.
+# Set only in a local .env => natal shows only on your local runs (private).
+BIRTH_DATETIME = os.environ.get('BIRTH_DATETIME', '').strip()
+BIRTH_TZ       = os.environ.get('BIRTH_TZ', 'America/Chicago').strip()
+BIRTH_LAT      = float(os.environ.get('BIRTH_LAT', LAT))
+BIRTH_LON      = float(os.environ.get('BIRTH_LON', LON))
+
 PLANET_EMOJI = {'Saturn': '🪐', 'Jupiter': '♃', 'Mars': '🔥', 'Sun': '☀️',
                 'Venus': '💛', 'Mercury': '📜', 'Moon': '🌙'}
 
@@ -909,6 +918,119 @@ def get_sky_geometry(now_local):
 
     return {'zenith': zenith, 'ascendant': ascendant, 'positions': positions}
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LIVING SKY ENGINE — real zodiac positions, retrogrades, aspects, natal transits
+# All geocentric ecliptic longitudes from ephem; genuinely changes day to day.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+ZODIAC = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra',
+          'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
+ZODIAC_GLYPH = {'Aries': '\u2648', 'Taurus': '\u2649', 'Gemini': '\u264A',
+                'Cancer': '\u264B', 'Leo': '\u264C', 'Virgo': '\u264D',
+                'Libra': '\u264E', 'Scorpio': '\u264F', 'Sagittarius': '\u2650',
+                'Capricorn': '\u2651', 'Aquarius': '\u2652', 'Pisces': '\u2653'}
+# (name, exact angle, orb, glyph)
+ASPECTS = [('Conjunction', 0, 8, '\u260C'), ('Sextile', 60, 4, '\u26B9'),
+           ('Square', 90, 6, '\u25A1'), ('Trine', 120, 6, '\u25B3'),
+           ('Opposition', 180, 8, '\u260D')]
+ASTRO_BODIES = {'Sun': ephem.Sun, 'Moon': ephem.Moon, 'Mercury': ephem.Mercury,
+                'Venus': ephem.Venus, 'Mars': ephem.Mars, 'Jupiter': ephem.Jupiter,
+                'Saturn': ephem.Saturn}
+
+
+def _ecl_lon(body_cls, when):
+    """Geocentric apparent ecliptic longitude (degrees, 0-360)."""
+    b = body_cls(); b.compute(when)
+    return math.degrees(float(ephem.Ecliptic(b).lon)) % 360
+
+
+def zodiac_of(lon):
+    return ZODIAC[int(lon // 30) % 12], lon % 30
+
+
+def _find_aspects(lons_a, lons_b, cross):
+    """Aspects between two longitude dicts. cross=False for one set (unique pairs)."""
+    out, ka, kb = [], list(lons_a), list(lons_b)
+    for i, a in enumerate(ka):
+        for j, b in enumerate(kb):
+            if not cross and j <= i:
+                continue
+            sep = abs(lons_a[a] - lons_b[b]) % 360
+            if sep > 180:
+                sep = 360 - sep
+            for name, angle, orb, glyph in ASPECTS:
+                if abs(sep - angle) <= orb:
+                    out.append({'a': a, 'b': b, 'aspect': name, 'glyph': glyph,
+                                'orb': round(abs(sep - angle), 1)})
+                    break
+    return sorted(out, key=lambda x: x['orb'])
+
+
+def get_astro_dynamics(now_local):
+    """Live zodiac signs, retrogrades, and transit-to-transit aspects."""
+    when  = local_to_ephem_str(now_local)
+    lons  = {n: _ecl_lon(cls, when) for n, cls in ASTRO_BODIES.items()}
+    signs = {n: zodiac_of(lons[n]) for n in ASTRO_BODIES}
+    earlier = ephem.Date(ephem.Date(when) - 0.75)   # ~18h back for retro test
+    retro = []
+    for n, cls in ASTRO_BODIES.items():
+        if n in ('Sun', 'Moon'):
+            continue
+        diff = (lons[n] - _ecl_lon(cls, earlier) + 540) % 360 - 180
+        if diff < 0:
+            retro.append(n)
+    return {'lons': lons, 'signs': signs, 'retrogrades': retro,
+            'aspects': _find_aspects(lons, lons, cross=False)}
+
+
+def _ascendant_mc(when, lat, lon):
+    """Ecliptic longitudes of the Ascendant and Midheaven at a moment/place."""
+    obs = ephem.Observer()
+    obs.lon, obs.lat, obs.date = math.radians(lon), math.radians(lat), when
+    ramc = float(obs.sidereal_time())                       # local sidereal time (rad)
+    jd   = float(ephem.Date(obs.date)) + 2415020.0
+    T    = (jd - 2451545.0) / 36525.0
+    eps  = math.radians(23.439291 - 0.0130042 * T - 1.64e-7 * T * T + 5.04e-7 * T ** 3)
+    latr = math.radians(lat)
+    asc  = math.degrees(math.atan2(math.cos(ramc),
+             -(math.sin(ramc) * math.cos(eps) + math.tan(latr) * math.sin(eps)))) % 360
+    mc   = math.degrees(math.atan2(math.sin(ramc),
+             math.cos(ramc) * math.cos(eps))) % 360
+    return asc, mc
+
+
+def get_natal(birth_str, tz_name, lat=None, lon=None):
+    """birth_str = 'YYYY-MM-DD HH:MM' local to tz_name. Returns natal longitudes/signs
+    plus Ascendant & Midheaven when lat/lon are supplied."""
+    if not birth_str:
+        return None
+    try:
+        tz    = pytz.timezone(tz_name)
+        naive = datetime.datetime.strptime(birth_str.strip(), '%Y-%m-%d %H:%M')
+        when  = local_to_ephem_str(tz.localize(naive))
+    except Exception as e:
+        print(f'[Oracle] Natal skipped ({e})')
+        return None
+    lons = {n: _ecl_lon(cls, when) for n, cls in ASTRO_BODIES.items()}
+    natal = {'lons': lons, 'signs': {n: zodiac_of(lons[n]) for n in ASTRO_BODIES}}
+    if lat is not None and lon is not None:
+        try:
+            asc, mc = _ascendant_mc(when, lat, lon)
+            natal['ascendant'] = (asc, zodiac_of(asc))
+            natal['mc']        = (mc, zodiac_of(mc))
+        except Exception as e:
+            print(f'[Oracle] Ascendant skipped ({e})')
+    return natal
+
+
+def natal_transits(transit_lons, natal):
+    """Aspects today's sky makes to the natal chart."""
+    if not natal:
+        return []
+    return _find_aspects(transit_lons, natal['lons'], cross=True)
+
+
 def detect_overrides(lunar_data):
     overrides = []
     if lunar_data['phase'] == 'Full Moon' or lunar_data['illumination'] >= 97:
@@ -1003,12 +1125,30 @@ def build_prompt(d):
         ov = d['overrides'][0]
         ov_text = f"\nACTIVE OVERRIDE: {ov['name']} — {ov['message']}"
 
+    astro     = d['astro']
+    sky_signs = ', '.join(f"{n} in {s} {deg:.0f}\u00b0" for n, (s, deg) in astro['signs'].items())
+    retro_txt = ', '.join(astro['retrogrades']) or 'none'
+    asp_txt   = '; '.join(f"{x['a']} {x['aspect']} {x['b']}" for x in astro['aspects'][:6]) or 'no tight aspects'
+    natal_line = ''
+    trs = d.get('transits') or []
+    if d.get('natal') and trs:
+        tr_txt = '; '.join(f"transiting {x['a']} {x['aspect']} natal {x['b']}" for x in trs[:6])
+        asc_txt = ''
+        if d['natal'].get('ascendant'):
+            _, (asc_s, asc_d) = d['natal']['ascendant']
+            asc_txt = f" | Natal Ascendant {asc_s} {asc_d:.0f}\u00b0"
+        natal_line = ("\nNATAL TRANSITS (this querent's OWN birth chart — treat as deeply personal; "
+                      f"address them directly and specifically){asc_txt}: {tr_txt}")
+
     return f"""UNIFIED HERMETIC ORACLE — {d['date_str']} — {CITY}
 
 COMPUTED ASTRONOMICAL PARAMETERS:
 Day Ruler: {ruler} | Metal: {PLANET_METAL[ruler]} | Element: {PLANET_ELEMENT[ruler]}
 Planetary Hour: Ruler={ph['ruler']}, Hour #{ph['hour_num']} ({ph['period']}), {ph['minutes_remaining']} min remaining
 Sky Geometry: Zenith={sky['zenith']} | Ascendant={sky['ascendant']}
+Living Sky (real positions): {sky_signs}
+Retrograde: {retro_txt}
+Current Aspects: {asp_txt}{natal_line}
 Lunar Phase: {moon['phase']} | {moon['illumination']:.1f}% illuminated | Age: {moon['age']:.1f} days
 Lunar Mansion #{mansion[0]}: {mansion[1]} ({mansion[2]}) — {mansion[3]}
 Calendar Numerology: {cal} = {cal_sm[0]} — {cal_sm[1]}
@@ -1319,6 +1459,66 @@ def generate_html(data, sections, generated_at):
     else:
         patterns_html = ''
 
+    # ── Living Sky card (real signs / retrogrades / aspects) ──────────────────
+    astro = data['astro']
+    sign_rows = ''
+    for n, (s, deg) in astro['signs'].items():
+        rt    = ' <span style="color:#d6564a;font-size:0.85em" title="retrograde">&#8478;</span>' if n in astro['retrogrades'] else ''
+        color = PLANET_COLOR.get(n, 'var(--muted)')
+        sign_rows += (f'<div class="time-row"><span class="time-label">'
+                      f'<span class="pdot" style="background:{color}"></span>{n}{rt}</span>'
+                      f'<span class="time-value">{ZODIAC_GLYPH[s]} {s} {deg:.1f}&deg;</span></div>')
+    aspect_rows = ''.join(
+        f'<div class="time-row"><span class="time-label">{x["a"]} {x["glyph"]} {x["b"]}</span>'
+        f'<span class="time-value">{x["aspect"]} &middot; {x["orb"]}&deg; orb</span></div>'
+        for x in astro['aspects'][:7]) or '<div class="param-note">No tight aspects at this moment.</div>'
+    retro_txt = ', '.join(astro['retrogrades']) or 'None currently'
+    living_sky_html = f"""
+  <div class="card">
+    <div class="card-title">Living Sky &bull; Real Positions Now</div>
+    <div class="two-col-row" style="margin-top:0.4rem">
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">Signs &amp; Degrees</div>
+        {sign_rows}
+      </div>
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">Active Aspects</div>
+        {aspect_rows}
+      </div>
+    </div>
+    <div class="param-note" style="margin-top:0.7rem">Retrograde: {retro_txt}</div>
+  </div>"""
+
+    # ── Natal Transits card (only if birth data provided) ─────────────────────
+    natal_html   = ''
+    transits_all = data.get('transits') or []
+    if data.get('natal') and transits_all:
+        tr_rows = ''.join(
+            f'<div class="time-row"><span class="time-label">'
+            f'<span class="pdot" style="background:{PLANET_COLOR.get(x["a"],"var(--muted)")}"></span>'
+            f'{x["a"]} {x["glyph"]} natal {x["b"]}</span>'
+            f'<span class="time-value">{x["aspect"]} &middot; {x["orb"]}&deg;</span></div>'
+            for x in transits_all[:8])
+        natal_signs = '&nbsp;&nbsp;'.join(
+            f'{n} {ZODIAC_GLYPH[s]}' for n, (s, deg) in data['natal']['signs'].items())
+        angles_html = ''
+        if data['natal'].get('ascendant'):
+            asc_lon, (asc_s, asc_d) = data['natal']['ascendant']
+            mc_lon,  (mc_s,  mc_d)  = data['natal']['mc']
+            angles_html = (f'<div class="time-row primary"><span class="time-label">Ascendant (Rising)</span>'
+                           f'<span class="time-value">{ZODIAC_GLYPH[asc_s]} {asc_s} {asc_d:.1f}&deg;</span></div>'
+                           f'<div class="time-row"><span class="time-label">Midheaven (MC)</span>'
+                           f'<span class="time-value">{ZODIAC_GLYPH[mc_s]} {mc_s} {mc_d:.1f}&deg;</span></div>')
+        natal_html = f"""
+  <div class="card">
+    <div class="card-title">Your Natal Transits &bull; Today's Sky to Your Chart</div>
+    <div class="param-note" style="margin-bottom:0.6rem">Natal chart: {natal_signs}</div>
+    {angles_html}
+    <div class="card-title" style="margin-top:1rem">Transits</div>
+    {tr_rows}
+    <div class="param-note" style="margin-top:0.7rem">Tightest orbs first &mdash; these are the day's most personal currents.</div>
+  </div>"""
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1480,6 +1680,8 @@ def generate_html(data, sections, generated_at):
     {ruler_practice_html}
     <div class="param-note" style="margin-top:0.8rem;text-align:center">{SCHEDULE_FOOTER}</div>
   </div>
+{living_sky_html}
+{natal_html}
 {patterns_html}
 
   <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
@@ -1651,6 +1853,16 @@ def main():
     print(f'[Oracle] Building planetary-hour schedule (focus: {FOCUS}) ...')
     hour_schedule = build_hour_schedule(now_local)
 
+    print('[Oracle] Reading the living sky (signs / retrogrades / aspects) ...')
+    astro = get_astro_dynamics(now_local)
+    print(f'         Retrograde: {", ".join(astro["retrogrades"]) or "none"} | '
+          f'{len(astro["aspects"])} active aspect(s)')
+
+    natal    = get_natal(BIRTH_DATETIME, BIRTH_TZ, BIRTH_LAT, BIRTH_LON)
+    transits = natal_transits(astro['lons'], natal)
+    if natal:
+        print(f'         Natal loaded | {len(transits)} transit(s) to your chart')
+
     # ── Esoteric calculations ─────────────────────────────────────────────────
     cal_num, base_num = calculate_numerology(now_local.date())
     overrides         = detect_overrides(lunar)
@@ -1689,6 +1901,9 @@ def main():
         'lunar':            lunar,
         'planetary_hour':   ph,
         'hour_schedule':    hour_schedule,
+        'astro':            astro,
+        'natal':            natal,
+        'transits':         transits,
         'history_summary':  history_summary,
         'sky':              sky,
         'numerology':       {'calendar': cal_num, 'base': base_num},

@@ -2,8 +2,8 @@ name: Daily Oracle Synthesis
 
 on:
   schedule:
-    # 4:20 AM CDT = 09:20 UTC (Mar–Nov daylight saving)
-    # During CST (Nov–Mar) this will run at 3:20 AM local — see README to adjust
+    # 14:00 UTC = 9:00 AM CDT (summer) / 8:00 AM CST (winter).
+    # Runs after sunrise year-round so the day ruler is the correct calendar day.
     - cron: '0 14 * * *'
   workflow_dispatch:
     # Allows manual trigger from Actions tab anytime
@@ -30,11 +30,13 @@ jobs:
         run: python generate.py
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          BIRTH_DATETIME: '1981-05-17 13:31'
+          BIRTH_TZ: 'America/Chicago'
 
       - name: Commit and push generated Oracle
         run: |
           git config user.name  "Hermetic Oracle Engine"
           git config user.email "oracle@hermetic.local"
           git add docs/
-          git diff --staged --quiet || git commit -m "⊙ Oracle synthesis: $(date -u +'%Y-%m-%d at %H:%M UTC')"
+          git diff --staged --quiet || git commit -m "Oracle synthesis: $(date -u +'%Y-%m-%d at %H:%M UTC')"
           git push

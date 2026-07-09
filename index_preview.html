@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermetic Oracle &mdash; July 9, 2026</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold: #c9a84c;
+  --gold-bright: #f0c040;
+  --gold-dim: rgba(201,168,76,0.3);
+  --crimson: #8b1a1a;
+  --crimson-bright: #c41e3a;
+  --silver: #b0b8c0;
+  --bg: #07070f;
+  --bg2: #0d0a14;
+  --bg3: #13101e;
+  --card: rgba(255,255,255,0.035);
+  --card-hover: rgba(255,255,255,0.055);
+  --border: rgba(201,168,76,0.22);
+  --border-bright: rgba(201,168,76,0.5);
+  --text: #d4cfc4;
+  --muted: #7a7060;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(180deg, #04030a 0%, #0a0718 40%, #0d0a1f 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.hero-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.hero-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  color: var(--silver);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.75rem;
+}
+.hero-location {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+}
+
+/* ─── MAIN LAYOUT ─────────────────────────────────────── */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ─── CONVERGENCE SCORE ───────────────────────────────── */
+.convergence-wrap {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.convergence-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(4rem, 12vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #f0c040, #c9a84c, #e8b830);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.convergence-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+.tier-badge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.3rem 1.2rem;
+  border: 1px solid var(--gold);
+  border-radius: 2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+.convergence-breakdown {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.breakdown-item {
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+}
+
+/* ─── OVERRIDE BANNER ─────────────────────────────────── */
+.override-banner {
+  background: linear-gradient(135deg, rgba(139,26,26,0.35), rgba(196,30,58,0.15));
+  border: 1px solid rgba(196,30,58,0.5);
+  border-left: 4px solid var(--crimson-bright);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.override-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--crimson-bright);
+  margin-bottom: 0.4rem;
+}
+.override-meta {
+  font-size: 0.78rem;
+  color: var(--silver);
+  margin-bottom: 0.5rem;
+}
+.override-msg {
+  font-size: 0.85rem;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* ─── CARDS ───────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── THREE PILLARS ───────────────────────────────────── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 600px) {
+  .pillars-grid { grid-template-columns: 1fr; }
+}
+.pillar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+}
+.pillar-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.pillar-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.pillar-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.1em;
+}
+.pillar-main {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+.pillar-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.pillar-detail {
+  font-size: 0.72rem;
+  color: var(--silver);
+  margin-top: 0.3rem;
+}
+
+/* ─── PARAM GRIDS ─────────────────────────────────────── */
+.param-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (max-width: 500px) {
+  .param-grid { grid-template-columns: 1fr; }
+}
+.param-item { }
+.param-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.param-value {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.param-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+/* ─── TWO-COL CARDS ROW ───────────────────────────────── */
+.two-col-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 600px) {
+  .two-col-row { grid-template-columns: 1fr; }
+}
+
+/* ─── SOLAR/LUNAR ITEMS ───────────────────────────────── */
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.82rem;
+}
+.time-row:last-child { border-bottom: none; }
+.time-label { color: var(--muted); }
+.time-value { font-family: 'Cinzel', serif; color: var(--text); }
+.time-row.primary .time-label { color: var(--gold); }
+.time-row.primary .time-value { color: var(--gold-bright); }
+.hour-practice { color: var(--muted); font-family: 'Raleway', sans-serif; font-size: 0.82em; }
+.pdot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 4px currentColor; }
+.hour-row { transition: background 0.3s, border-color 0.3s; border-left: 2px solid transparent; padding-left: 6px; }
+.hour-row.current-hour {
+  background: linear-gradient(90deg, rgba(240,192,64,0.14), rgba(240,192,64,0.02));
+  border-left: 2px solid var(--gold-bright);
+}
+.hour-row.current-hour .time-value,
+.hour-row.current-hour .hour-practice { color: var(--gold-bright); }
+.now-banner {
+  margin: 0.5rem 0 0.2rem; padding: 0.55rem 0.8rem; border-radius: 6px;
+  background: rgba(240,192,64,0.08); border: 1px solid var(--gold-dim);
+  color: var(--gold-bright); font-family: 'Cinzel', serif; font-size: 0.92rem;
+  text-align: center; letter-spacing: 0.02em;
+}
+
+/* ─── SECTION HEADERS ─────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.5rem 0 1.25rem;
+}
+.section-header::before,
+.section-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section-header::before { max-width: 2rem; }
+.section-numeral {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--crimson-bright);
+  white-space: nowrap;
+}
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* ─── SECTION CONTENT ─────────────────────────────────── */
+.section-content p {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+.section-content p:last-child { margin-bottom: 0; }
+
+/* ─── VISUALIZATION / HALL ────────────────────────────── */
+.gateway-card {
+  background: linear-gradient(135deg, rgba(13,10,20,0.95), rgba(20,14,32,0.95));
+  border: 1px solid var(--border-bright);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+.gateway-card p {
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--silver);
+  font-style: italic;
+}
+.gateway-card p + p { margin-top: 0.75rem; }
+
+/* ─── MANTRA DISPLAY ──────────────────────────────────── */
+.mantra-line {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: var(--gold-bright);
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 1.25rem;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+}
+
+/* ─── HERMETIC FORMULA ────────────────────────────────── */
+.formula-box {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--gold);
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-top: 0.75rem;
+}
+.formula-key {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ─── ORACLE REPORT ───────────────────────────────────── */
+.oracle-section {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.oracle-section:last-child { border-bottom: none; }
+.oracle-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--crimson-bright);
+  margin-bottom: 0.4rem;
+}
+.oracle-text {
+  font-size: 0.87rem;
+  color: var(--text);
+  line-height: 1.8;
+}
+.transmission-text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  color: var(--gold-bright);
+  font-style: italic;
+}
+
+/* ─── SHIELD / SEAL ───────────────────────────────────── */
+.seal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 600px) { .seal-row { grid-template-columns: 1fr; } }
+
+/* ─── FREQUENCY PILL ──────────────────────────────────── */
+.freq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid var(--gold-dim);
+  border-radius: 2rem;
+  padding: 0.25rem 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+}
+
+/* ─── FOOTER ──────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.footer-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+}
+.footer-time {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO HEADER -->
+<div class="hero">
+  <div class="hero-eyebrow">Hermetic Oracle Engine &bull; Unified Synthesis</div>
+  <div class="hero-title">THE HERMETIC ORACLE</div>
+  <div class="hero-subtitle">THURSDAY &bull; JULY 9, 2026</div>
+  <div class="hero-location">&#x2609; San Antonio, TX &nbsp;&bull;&nbsp; Day Ruler: Jupiter &nbsp;&bull;&nbsp; Tin &bull; Fire</div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+
+  <!-- CONVERGENCE SCORE -->
+  <div class="convergence-wrap">
+    <div class="convergence-num" style="color:#b0b8c0">60</div>
+    <div class="convergence-label">CONVERGENCE SCORE / 100</div>
+    <div class="tier-badge" style="color:#b0b8c0;border-color:#b0b8c0">&#9889; MODERATE</div>
+    <div class="convergence-breakdown"><span class="breakdown-item">Hour ruler matches day ruler (+10)</span></div>
+  </div>
+
+  
+
+  <!-- THREE PILLARS (Oracle2 Architecture) -->
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="pillar-num">PILLAR I</div>
+      <div class="pillar-icon">&#9728;</div>
+      <div class="pillar-name">SKY GEOMETRY</div>
+      <div class="pillar-main">Zenith: Saturn</div>
+      <div class="pillar-detail">Ascendant: Moon</div>
+      <div class="pillar-sub">What is literally above you</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">PILLAR II</div>
+      <div class="pillar-icon">&#8987;</div>
+      <div class="pillar-name">PLANETARY HOUR</div>
+      <div class="pillar-main" id="ph-ruler">Ruler: Mercury</div>
+      <div class="pillar-detail" id="ph-detail">Hour #22 &bull; Night &bull; 10 min remaining</div>
+      <div class="pillar-sub">Day ruler: Jupiter</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">PILLAR III</div>
+      <div class="pillar-icon">&#9790;</div>
+      <div class="pillar-name">LUNAR MANSION</div>
+      <div class="pillar-main">#3: Al-Thurayya</div>
+      <div class="pillar-detail">The Pleiades</div>
+      <div class="pillar-sub">Knowledge, travel, divine transmission</div>
+    </div>
+  </div>
+
+  <!-- PLANETARY PARAMETERS -->
+  <div class="card">
+    <div class="card-title">Planetary Parameters</div>
+    <div class="param-grid">
+      <div class="param-item">
+        <div class="param-label">Ruler</div>
+        <div class="param-value">Jupiter (Day) &bull; Mercury (Hour)</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Metal &bull; Element</div>
+        <div class="param-value">Tin &bull; Fire</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Hermetic Principle</div>
+        <div class="param-value">Mentalism</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Solfeggio Frequency</div>
+        <div class="param-value"><span class="freq-pill">&#9835; 963 Hz</span></div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Word of Power</div>
+        <div class="param-value">AMUN-RA</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Sacred Vowel &bull; Chakra</div>
+        <div class="param-value">OH &bull; Crown (Sahasrara)</div>
+        <div class="param-note">Expands Jovian wisdom; opens the higher mind</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Chakra Circuit</div>
+        <div class="param-value">Crown (Sahasrara)</div>
+        <div class="param-note">Seat of expanded consciousness and divine law</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUMEROLOGY -->
+  <div class="card">
+    <div class="card-title">Esoteric Numerology</div>
+    <div class="param-grid">
+      <div class="param-item">
+        <div class="param-label">Calendar Numerology</div>
+        <div class="param-value">8 &mdash; Build/Destroy</div>
+        <div class="param-note">Dual nature of creation — dissolution preceding construction</div>
+      </div>
+      <div class="param-item">
+        <div class="param-label">Base Number (Day of Month)</div>
+        <div class="param-value">9 &mdash; Born</div>
+        <div class="param-note">Completion and initiation — the new cycle emerging from the old</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLAR / LUNAR -->
+  <div class="two-col-row">
+    <div class="card">
+      <div class="card-title">Solar Activation Windows</div>
+      <div class="time-row"><span class="time-label">Astronomical Dawn</span><span class="time-value">05:07 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Nautical Twilight</span><span class="time-value">05:41 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Civil Twilight</span><span class="time-value">06:14 AM CDT</span></div>
+      <div class="time-row primary"><span class="time-label">&#9733; Sunrise (Primary Window)</span><span class="time-value">06:41 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Solar Noon</span><span class="time-value">01:39 PM CDT</span></div>
+      <div class="time-row"><span class="time-label">Sunset</span><span class="time-value">08:37 PM CDT</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Lunar Status</div>
+      <div class="time-row primary"><span class="time-label">Phase</span><span class="time-value">Waning Crescent</span></div>
+      <div class="time-row"><span class="time-label">Illumination</span><span class="time-value">32.6%</span></div>
+      <div class="time-row"><span class="time-label">Age</span><span class="time-value">24.3 days</span></div>
+      <div class="time-row"><span class="time-label">Ecliptic Longitude</span><span class="time-value">37.8&#176;</span></div>
+      <div class="time-row"><span class="time-label">Moonrise</span><span class="time-value">02:34 AM CDT</span></div>
+      <div class="time-row"><span class="time-label">Moonset</span><span class="time-value">03:53 PM CDT</span></div>
+    </div>
+  </div>
+
+  <!-- PLANET POSITIONS -->
+  <div class="card">
+    <div class="card-title">Live Planet Positions &bull; San Antonio, TX</div>
+    <div class="time-row"><span class="time-label">Moon</span><span class="time-value">Above · Alt 36.1° · Az 88.0°</span></div><div class="time-row"><span class="time-label">Mercury</span><span class="time-value">Below · Alt -28.1° · Az 46.8°</span></div><div class="time-row"><span class="time-label">Venus</span><span class="time-value">Below · Alt -47.4° · Az 5.9°</span></div><div class="time-row"><span class="time-label">Mars</span><span class="time-value">Above · Alt 10.8° · Az 71.5°</span></div><div class="time-row"><span class="time-label">Jupiter</span><span class="time-value">Below · Alt -31.6° · Az 35.8°</span></div><div class="time-row"><span class="time-label">Saturn</span><span class="time-value">Above · Alt 45.7° · Az 118.6°</span></div>
+  </div>
+
+  <!-- PLANETARY HOURS SCHEDULE (compass) -->
+  <div class="card">
+    <div class="card-title">Hermetic Compass — Hourly Practice</div>
+    <div id="now-hour" class="now-banner">Locating current hour&hellip;</div>
+    <div class="two-col-row" style="margin-top:0.4rem">
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">&#9728; Day Hours</div>
+        <div class="time-row hour-row" id="hr-0"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>6:41 AM – 7:50 AM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-1"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>7:50 AM – 9:00 AM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row hour-row" id="hr-2"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>9:00 AM – 10:10 AM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row hour-row" id="hr-3"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>10:10 AM – 11:19 AM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row hour-row" id="hr-4"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>11:19 AM – 12:29 PM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row hour-row" id="hr-5"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>12:29 PM – 1:39 PM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-6"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>1:39 PM – 2:48 PM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row hour-row" id="hr-7"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>2:48 PM – 3:58 PM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-8"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>3:58 PM – 5:08 PM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row hour-row" id="hr-9"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>5:08 PM – 6:17 PM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row hour-row" id="hr-10"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>6:17 PM – 7:27 PM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row hour-row" id="hr-11"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>7:27 PM – 8:37 PM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div>
+      </div>
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">&#127756; Night Hours</div>
+        <div class="time-row hour-row" id="hr-12"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>8:37 PM – 9:27 PM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-13"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>9:27 PM – 10:17 PM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row hour-row" id="hr-14"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>10:17 PM – 11:08 PM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-15"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>11:08 PM – 11:58 PM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row hour-row" id="hr-16"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>11:58 PM – 12:49 AM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div><div class="time-row hour-row" id="hr-17"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>12:49 AM – 1:39 AM</span><span class="time-value">Venus · <span class="hour-practice">Love & Beauty</span></span></div><div class="time-row hour-row" id="hr-18"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>1:39 AM – 2:29 AM</span><span class="time-value">Mercury · <span class="hour-practice">Mind & Communication</span></span></div><div class="time-row hour-row" id="hr-19"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>2:29 AM – 3:20 AM</span><span class="time-value">Moon · <span class="hour-practice">Rest & Intuition</span></span></div><div class="time-row hour-row" id="hr-20"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>3:20 AM – 4:10 AM</span><span class="time-value">Saturn · <span class="hour-practice">Structure & Discipline</span></span></div><div class="time-row hour-row" id="hr-21"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>4:10 AM – 5:00 AM</span><span class="time-value">Jupiter · <span class="hour-practice">Growth & Gratitude</span></span></div><div class="time-row hour-row" id="hr-22"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>5:00 AM – 5:51 AM</span><span class="time-value">Mars · <span class="hour-practice">Energy & Courage</span></span></div><div class="time-row hour-row" id="hr-23"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>5:51 AM – 6:41 AM</span><span class="time-value">Sun · <span class="hour-practice">Vitality & Purpose</span></span></div>
+      </div>
+    </div>
+    <div class="card-title" style="margin-top:1.2rem">&#10024; Key Hours</div>
+    <div class="time-row primary"><span class="time-label">💛 Venus (Love / Beauty)</span><span class="time-value">10:10 AM–11:19 AM, 6:17 PM–7:27 PM, 12:49 AM–1:39 AM</span></div><div class="time-row"><span class="time-label">🪐 Saturn (Structure)</span><span class="time-value">1:39 PM–2:48 PM, 9:27 PM–10:17 PM, 3:20 AM–4:10 AM</span></div>
+    <div class="card-title" style="margin-top:1.2rem">Day Ruler &mdash; Jupiter</div>
+    <div class="param-grid"><div class="param-item"><div class="param-label">Practice</div><div class="param-value">♃ Growth & Gratitude</div></div><div class="param-item"><div class="param-label">Frequency &bull; Vowel</div><div class="param-value"><span class="freq-pill">&#9835; 528 Hz</span></div><div class="param-note">Upsilon (ü) — resonant</div></div><div class="param-item" style="grid-column:1/-1"><div class="param-label">Today's Working</div><div class="param-value" style="font-family:'Raleway',sans-serif;font-weight:400">Expand something: learn, plan, reach out, give thanks. Say yes to one opportunity.</div></div><div class="param-item" style="grid-column:1/-1"><div class="param-label">Affirmation</div><div class="param-value" style="font-style:italic">&ldquo;Abundance moves toward me through open doors.&rdquo;</div></div></div>
+    <div class="param-note" style="margin-top:0.8rem;text-align:center">Move with the hours, not against them. Every planet serves the whole.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Living Sky &bull; Real Positions Now</div>
+    <div class="two-col-row" style="margin-top:0.4rem">
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">Signs &amp; Degrees</div>
+        <div class="time-row"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>Sun</span><span class="time-value">♋ Cancer 16.9&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#b8c0d6"></span>Moon</span><span class="time-value">♉ Taurus 7.4&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#e08a3c"></span>Mercury <span style="color:#d6564a;font-size:0.85em" title="retrograde">&#8478;</span></span><span class="time-value">♋ Cancer 22.6&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>Venus</span><span class="time-value">♌ Leo 29.3&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>Mars</span><span class="time-value">♊ Gemini 7.1&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>Jupiter</span><span class="time-value">♌ Leo 1.6&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>Saturn</span><span class="time-value">♈ Aries 14.1&deg;</span></div>
+      </div>
+      <div>
+        <div class="param-label" style="margin-bottom:0.4rem">Active Aspects</div>
+        <div class="time-row"><span class="time-label">Sun □ Saturn</span><span class="time-value">Square &middot; 2.7&deg; orb</span></div><div class="time-row"><span class="time-label">Sun ☌ Mercury</span><span class="time-value">Conjunction &middot; 5.8&deg; orb</span></div><div class="time-row"><span class="time-label">Moon □ Jupiter</span><span class="time-value">Square &middot; 5.8&deg; orb</span></div>
+      </div>
+    </div>
+    <div class="param-note" style="margin-top:0.7rem">Retrograde: Mercury</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Your Natal Transits &bull; Today's Sky to Your Chart</div>
+    <div class="param-note" style="margin-bottom:0.6rem">Natal chart: Sun ♉&nbsp;&nbsp;Moon ♏&nbsp;&nbsp;Mercury ♊&nbsp;&nbsp;Venus ♊&nbsp;&nbsp;Mars ♉&nbsp;&nbsp;Jupiter ♎&nbsp;&nbsp;Saturn ♎</div>
+    <div class="time-row primary"><span class="time-label">Ascendant (Rising)</span><span class="time-value">♌ Leo 29.2&deg;</span></div><div class="time-row"><span class="time-label">Midheaven (MC)</span><span class="time-value">♉ Taurus 26.9&deg;</span></div>
+    <div class="card-title" style="margin-top:1rem">Transits</div>
+    <div class="time-row"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>Sun ⚹ natal Mars</span><span class="time-value">Sextile &middot; 0.1&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>Mars ☌ natal Venus</span><span class="time-value">Conjunction &middot; 0.5&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>Jupiter ⚹ natal Jupiter</span><span class="time-value">Sextile &middot; 0.8&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#5a8fd6"></span>Jupiter ⚹ natal Saturn</span><span class="time-value">Sextile &middot; 1.9&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#5fc98a"></span>Venus □ natal Sun</span><span class="time-value">Square &middot; 2.3&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#8a86b8"></span>Saturn ⚹ natal Mercury</span><span class="time-value">Sextile &middot; 2.9&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#f0c040"></span>Sun △ natal Moon</span><span class="time-value">Trine &middot; 3.3&deg;</span></div><div class="time-row"><span class="time-label"><span class="pdot" style="background:#d6564a"></span>Mars △ natal Saturn</span><span class="time-value">Trine &middot; 3.6&deg;</span></div>
+    <div class="param-note" style="margin-top:0.7rem">Tightest orbs first &mdash; these are the day's most personal currents.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Patterns &bull; Looking Back to Look Ahead</div>
+    <div class="param-grid">
+      <div class="param-item"><div class="param-label">Days Recorded</div>
+        <div class="param-value">1</div></div>
+      <div class="param-item"><div class="param-label">Current Streak</div>
+        <div class="param-value">1 day</div></div>
+      <div class="param-item"><div class="param-label">Avg Convergence</div>
+        <div class="param-value">60.0 / 100</div></div>
+      <div class="param-item"><div class="param-label">Peak Convergence</div>
+        <div class="param-value">60 / 100</div>
+        <div class="param-note">2026-07-09</div></div>
+      <div class="param-item"><div class="param-label">Most Common Tier</div>
+        <div class="param-value">MODERATE</div></div>
+    </div>
+    <div class="card-title" style="margin-top:1rem">Moon Phase Distribution</div>
+    <div class="time-row"><span class="time-label">Waning Crescent</span><span class="time-value">1</span></div>
+    <div class="param-note" style="margin-top:0.7rem">Grows richer each day. Full data: <code>docs/data/history.jsonl</code></div>
+  </div>
+
+  <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">I</span>
+    <span class="section-title">THE DAY&rsquo;S ESOTERIC MATHEMATICS</span>
+  </div>
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ═══ SECTION II: HERMETIC PRINCIPLE ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">II</span>
+    <span class="section-title">THE HERMETIC PRINCIPLE &mdash; MENTALISM</span>
+  </div>
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ═══ SECTION III: VOWEL CHANT ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">III</span>
+    <span class="section-title">THE VOWEL CHANT PROTOCOL &mdash; OH</span>
+  </div>
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ═══ SECTION IV: MANTRA & MEDITATION ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">IV</span>
+    <span class="section-title">THE UNIFIED MANTRA &amp; MEDITATION</span>
+  </div>
+  
+  <div class="card section-content"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- VISUALIZATION GATEWAY -->
+  <div class="section-header">
+    <span class="section-numeral">&#9790;</span>
+    <span class="section-title">VISUALIZATION GATEWAY</span>
+  </div>
+  <div class="gateway-card"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- HALL OF AMENTI -->
+  <div class="section-header">
+    <span class="section-numeral">&#9993;</span>
+    <span class="section-title">HALL OF AMENTI &mdash; THE JUPITER TEMPLE</span>
+  </div>
+  <div class="gateway-card"><p>[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</p></div>
+
+  <!-- ASTRAL SHIELD & SEAL -->
+  <div class="seal-row">
+    <div class="card">
+      <div class="card-title">Astral Shield Protocol</div>
+      <p style="font-size:0.87rem;line-height:1.8;color:var(--silver)">An electric blue-gold sphere, vast and expansive, studded with stars at its equator, humming with the resonance of Jovian authority.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Seal Geometry</div>
+      <p style="font-size:0.87rem;color:var(--silver);margin-bottom:0.75rem">A royal blue four-pointed star inside a golden square</p>
+      <div class="card-title" style="margin-top:1rem">Hermetic Formula</div>
+      <div class="formula-box">M = C * E_x</div>
+      <div class="formula-key">M=Manifest Reality, C=Consciousness, E_x=Expansion Coefficient</div>
+    </div>
+  </div>
+
+  <!-- ORACLE INTELLIGENCE REPORT -->
+  <div class="section-header">
+    <span class="section-numeral">&#9670;</span>
+    <span class="section-title">ORACLE INTELLIGENCE REPORT</span>
+  </div>
+  <div class="card">
+      <div class="oracle-section">
+        <div class="oracle-num"> </div>
+        <div class="oracle-text">[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]</div>
+      </div></div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-title">Hermetic Oracle Engine &bull; Unified Daily Synthesis</div>
+  <div class="footer-time">Generated: July 9, 2026 at 04:50 AM CDT</div>
+</div>
+
+<script>
+(function(){
+  var SCHED = [{i:0,s:1783597270304,e:1783601450341,p:"Jupiter",t:"Growth & Gratitude"},{i:1,s:1783601450341,e:1783605630379,p:"Mars",t:"Energy & Courage"},{i:2,s:1783605630379,e:1783609810417,p:"Sun",t:"Vitality & Purpose"},{i:3,s:1783609810417,e:1783613990454,p:"Venus",t:"Love & Beauty"},{i:4,s:1783613990454,e:1783618170492,p:"Mercury",t:"Mind & Communication"},{i:5,s:1783618170492,e:1783622350530,p:"Moon",t:"Rest & Intuition"},{i:6,s:1783622350530,e:1783626530567,p:"Saturn",t:"Structure & Discipline"},{i:7,s:1783626530567,e:1783630710605,p:"Jupiter",t:"Growth & Gratitude"},{i:8,s:1783630710605,e:1783634890643,p:"Mars",t:"Energy & Courage"},{i:9,s:1783634890643,e:1783639070680,p:"Sun",t:"Vitality & Purpose"},{i:10,s:1783639070680,e:1783643250718,p:"Venus",t:"Love & Beauty"},{i:11,s:1783643250718,e:1783647430756,p:"Mercury",t:"Mind & Communication"},{i:12,s:1783647430756,e:1783650453161,p:"Moon",t:"Rest & Intuition"},{i:13,s:1783650453161,e:1783653475567,p:"Saturn",t:"Structure & Discipline"},{i:14,s:1783653475567,e:1783656497973,p:"Jupiter",t:"Growth & Gratitude"},{i:15,s:1783656497973,e:1783659520379,p:"Mars",t:"Energy & Courage"},{i:16,s:1783659520379,e:1783662542784,p:"Sun",t:"Vitality & Purpose"},{i:17,s:1783662542784,e:1783665565190,p:"Venus",t:"Love & Beauty"},{i:18,s:1783665565190,e:1783668587596,p:"Mercury",t:"Mind & Communication"},{i:19,s:1783668587596,e:1783671610002,p:"Moon",t:"Rest & Intuition"},{i:20,s:1783671610002,e:1783674632407,p:"Saturn",t:"Structure & Discipline"},{i:21,s:1783674632407,e:1783677654813,p:"Jupiter",t:"Growth & Gratitude"},{i:22,s:1783677654813,e:1783680677219,p:"Mars",t:"Energy & Courage"},{i:23,s:1783680677219,e:1783683699625,p:"Sun",t:"Vitality & Purpose"}];
+  function upd(){
+    var now = Date.now(), cur = null, i, el;
+    for (i = 0; i < SCHED.length; i++){
+      el = document.getElementById('hr-' + SCHED[i].i);
+      if (el) el.classList.remove('current-hour');
+      if (now >= SCHED[i].s && now < SCHED[i].e) cur = SCHED[i];
+    }
+    var banner = document.getElementById('now-hour');
+    if (cur){
+      el = document.getElementById('hr-' + cur.i);
+      if (el) el.classList.add('current-hour');
+      var mins = Math.max(0, Math.round((cur.e - now) / 60000));
+      if (banner) banner.innerHTML = '\u25CF Now: <strong>' + cur.p + '</strong> hour \u00B7 ' + cur.t + ' \u00B7 ' + mins + ' min left';
+      var num = cur.i < 12 ? cur.i + 1 : cur.i - 11;
+      var per = cur.i < 12 ? 'Day' : 'Night';
+      var pr = document.getElementById('ph-ruler'); if (pr) pr.textContent = 'Ruler: ' + cur.p;
+      var pd = document.getElementById('ph-detail'); if (pd) pd.textContent = 'Hour #' + num + ' \u00B7 ' + per + ' \u00B7 ' + mins + ' min remaining';
+    } else if (banner){
+      banner.textContent = 'Between generation cycles \u2014 reload after the next daily run.';
+    }
+  }
+  upd(); setInterval(upd, 30000);
+})();
+</script>
+
+</body>
+</html>
