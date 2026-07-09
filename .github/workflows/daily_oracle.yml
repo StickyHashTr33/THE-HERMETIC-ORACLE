@@ -4,7 +4,7 @@ on:
   schedule:
     # 4:20 AM CDT = 09:20 UTC (Mar–Nov daylight saving)
     # During CST (Nov–Mar) this will run at 3:20 AM local — see README to adjust
-    - cron: '20 9 * * *'
+    - cron: '0 14 * * *'
   workflow_dispatch:
     # Allows manual trigger from Actions tab anytime
 

@@ -989,7 +989,7 @@ def build_prompt(d):
     sky     = d['sky']
     cal     = d['numerology']['calendar']
     base    = d['numerology']['base']
-    ruler   = ph['day_ruler']
+    ruler   = d['day_ruler']
     mansion = moon['mansion']
     cal_sm  = SUPREME_MATH.get(cal, SUPREME_MATH[cal % 10])
     base_sm = SUPREME_MATH.get(base, SUPREME_MATH[base % 10])
@@ -1121,7 +1121,7 @@ def generate_html(data, sections, generated_at):
     solar   = d['solar']
     cal     = d['numerology']['calendar']
     base    = d['numerology']['base']
-    ruler   = ph['day_ruler']
+    ruler   = d['day_ruler']
     freq    = PLANET_FREQUENCY[ruler]
     vowel, chakra_name, vowel_desc = PLANET_VOWEL[ruler]
     chakra_full, chakra_desc = PLANET_CHAKRA[ruler]
@@ -1366,7 +1366,7 @@ def generate_html(data, sections, generated_at):
       <div class="pillar-name">PLANETARY HOUR</div>
       <div class="pillar-main" id="ph-ruler">Ruler: {ph['ruler']}</div>
       <div class="pillar-detail" id="ph-detail">Hour #{ph['hour_num']} &bull; {ph['period']} &bull; {ph['minutes_remaining']} min remaining</div>
-      <div class="pillar-sub">Day ruler: {ph['day_ruler']}</div>
+      <div class="pillar-sub">Day ruler: {ruler}</div>
     </div>
     <div class="pillar">
       <div class="pillar-num">PILLAR III</div>
@@ -1657,11 +1657,15 @@ def main():
     score, tier, breakdown = calculate_convergence(lunar, ph, sky, cal_num, overrides)
     print(f'[Oracle] Convergence: {score}/100 ({tier})')
 
+    # Day-level content is anchored to the CALENDAR day (Thu = Jupiter), not the
+    # sunrise-anchored planetary day — otherwise a pre-dawn run shows yesterday's ruler.
+    day_ruler = WEEKDAY_RULERS[now_local.weekday()]
+
     # ── Append today's record + summarize history ─────────────────────────────
     history_record = {
         'date':        now_local.strftime('%Y-%m-%d'),
         'weekday':     now_local.strftime('%A'),
-        'day_ruler':   ph['day_ruler'],
+        'day_ruler':   day_ruler,
         'hour_ruler':  ph['ruler'],
         'convergence': score,
         'tier':        tier,
@@ -1680,6 +1684,7 @@ def main():
     data = {
         'now_local':        now_local,
         'date_str':         date_str,
+        'day_ruler':        day_ruler,
         'solar':            solar,
         'lunar':            lunar,
         'planetary_hour':   ph,
