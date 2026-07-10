@@ -1129,6 +1129,7 @@ def build_prompt(d):
         ov_text = f"\nACTIVE OVERRIDE: {ov['name']} — {ov['message']}"
 
     astro     = d['astro']
+    moon_sign = astro['signs']['Moon'][0]
     sky_signs = ', '.join(f"{n} in {s} {deg:.0f}\u00b0" for n, (s, deg) in astro['signs'].items())
     retro_txt = ', '.join(astro['retrogrades']) or 'none'
     asp_txt   = '; '.join(f"{x['a']} {x['aspect']} {x['b']}" for x in astro['aspects'][:6]) or 'no tight aspects'
@@ -1165,23 +1166,19 @@ Word of Power: {wop}
 Convergence Score: {d['convergence']}/100 — {d['convergence_tier']}
 Primary Activation Window: {sunrise}{ov_text}
 
-Generate EXACTLY 5 sections separated by the delimiter |SPLIT| with NO text before the first section.
-The "SECTION N —" lines below tell you what each section must contain — do NOT reproduce them or write any title/header. Output only the body content. Write in second person, to the practitioner.
+Output the 4 sections below in order. Begin EACH section with its marker alone on a line — exactly [[1]], [[2]], [[3]], [[4]] — followed immediately by that section's body. Put NOTHING before [[1]]. Do NOT write the section titles or any heading; output only each section's body after its marker. There must be exactly four markers.
 
-SECTION 1 — SUPREME MATHEMATICS AS INSIGHT
-Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — instead teach through ONE concrete parable, image, or lived example that carries their wisdom for today. Then show how to study them against your day: what to watch for, how these frequencies may color the events you meet and the way you read them. Reflective and specific, grounded in a single vivid image rather than abstractions. No ritual steps, no clock times. 150+ words.
+[[1]] — ENERGY FORECAST FOR THE DAY
+Write a grounded forecast for how to move through and plan today's energies — like a wise spiritual guide who also reads the real sky with precision. Ground every observation in the actual data above: the {ruler} day and how its planetary hours flow, the {moon['phase']} Moon in {moon_sign}, the current aspects ({asp_txt}), any retrogrades ({retro_txt}), and especially the tightest transits to the practitioner's own natal chart. Tell them concretely where the day leans, when to lead versus yield, which kinds of work the hours favor and which to hold back, and which personal currents to consciously work with — but speak with warmth and spiritual counsel, not clinical detachment. Name where grace and where friction may live today, and how to hold their energy with intention. Close with one sentence of genuine spiritual guidance for carrying themselves through the day. Real sky, soulful voice. 180+ words.
 
-SECTION 2 — THE HERMETIC PRINCIPLE OF {principle.upper()}
-Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens — where it is likely to appear and how to work with it in how you interpret what happens. No numbered rituals, no clock times. 150+ words.
+[[2]] — SUPREME MATHEMATICS AS INSIGHT
+Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — teach through ONE concrete parable or image that carries their wisdom for today, then show how to read the day's events through them. 130+ words.
 
-SECTION 3 — THE SACRED VOWEL {vowel}
-Explain the {vowel} vowel as a tuning for today: what it corresponds to (the {chakra} center, {freq} Hz), the quality it invites, and how to weave the sound into an ordinary day — a breath here, a hum there — to stay attuned. Insight over protocol. 100+ words.
+[[3]] — THE HERMETIC PRINCIPLE OF {principle.upper()}
+Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens. 130+ words.
 
-SECTION 4 — THE CHANT
-Give the {vowel} chant as a living practice, briefly and usably: how breath and sound move, where it resonates, and — above all — WHY this sound serves this particular day. Understanding, not a clinical checklist. 100+ words.
-
-SECTION 5 — TODAY'S MEDITATION
-ONE concise, flowing guided meditation weaving the whole day together: number {cal}, the principle of {principle}, {ruler}'s influence, the {moon['phase']} in Mansion {mansion[0]}, and the {vowel} chant at {freq} Hz{natal_hint}. Begin with a single mantra line in CAPS that invokes {wop}, then a calm, continuous meditation (not numbered steps) the practitioner can move through in a few minutes to center and carry the day. 160+ words."""
+[[4]] — YOUR VOWEL & CHANT
+Give the {vowel} vowel and its chant as ONE short practice: what it tunes (the {chakra} center, {freq} Hz), the quality it invites, and how to use it briefly through the day — a breath, a hum. Weave in the Word of Power {wop} as the day's word. One compact, usable practice — not a long meditation. 90+ words."""
 
 def call_groq(prompt, api_key):
     # Default to the proven llama-3.3-70b. For richer prose, set GROQ_MODEL to
@@ -1221,11 +1218,32 @@ def _strip_section_header(text):
                   count=1, flags=re.IGNORECASE).strip()
 
 def parse_sections(text):
-    parts  = text.split('|SPLIT|')
-    labels = ['math', 'principle', 'vowel', 'chant', 'meditation']
-    result = {}
-    for i, label in enumerate(labels):
-        result[label] = _strip_section_header(parts[i]) if i < len(parts) else ''
+    labels = ['forecast', 'math', 'principle', 'voice']
+    result = {l: '' for l in labels}
+
+    # Primary: split on [[N]] markers (robust across models)
+    chunks = re.split(r'\[\[\s*(\d+)\s*\]\]', text)
+    if len(chunks) > 2:
+        i = 1
+        while i < len(chunks) - 1:
+            try:
+                num = int(chunks[i])
+            except ValueError:
+                i += 2; continue
+            if 1 <= num <= 5:
+                result[labels[num - 1]] = _strip_section_header(chunks[i + 1].strip())
+            i += 2
+        return result
+
+    # Fallback: legacy |SPLIT| delimiter
+    if '|SPLIT|' in text:
+        parts = text.split('|SPLIT|')
+        for i, l in enumerate(labels):
+            result[l] = _strip_section_header(parts[i]) if i < len(parts) else ''
+        return result
+
+    # Last resort: keep everything rather than lose it
+    result['math'] = _strip_section_header(text)
     return result
 
 def text_to_html(text):
@@ -1320,13 +1338,10 @@ def generate_html(data, sections, generated_at):
     bd_items = ''.join(f'<span class="breakdown-item">{b}</span>' for b in breakdown)
 
     # ── Section content (Groq) ────────────────────────────────────────────────
+    forecast_html   = text_to_html(sections.get('forecast', ''))
     math_html       = text_to_html(sections.get('math', ''))
     principle_html  = text_to_html(sections.get('principle', ''))
-    vowel_html      = text_to_html(sections.get('vowel', ''))
-    chant_html      = text_to_html(sections.get('chant', ''))
-    med_raw         = sections.get('meditation', '')
-    med_mantra      = extract_mantra(med_raw)
-    med_body        = text_to_html(med_raw.replace(med_mantra, '', 1).strip()) if med_mantra else text_to_html(med_raw)
+    voice_html      = text_to_html(sections.get('voice', ''))
 
     # ── Planet positions summary ──────────────────────────────────────────────
     pos = sky['positions']
@@ -1674,41 +1689,33 @@ def generate_html(data, sections, generated_at):
 {natal_html}
 {patterns_html}
 
-  <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
+  <!-- ═══ SECTION I: ENERGY FORECAST ═══ -->
   <div class="section-header">
     <span class="section-numeral">I</span>
+    <span class="section-title">ENERGY FORECAST &mdash; PLANNING THE DAY</span>
+  </div>
+  <div class="card section-content">{forecast_html}</div>
+
+  <!-- ═══ SECTION II: SUPREME MATHEMATICS ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">II</span>
     <span class="section-title">SUPREME MATHEMATICS</span>
   </div>
   <div class="card section-content">{math_html}</div>
 
-  <!-- ═══ SECTION II: HERMETIC PRINCIPLE ═══ -->
+  <!-- ═══ SECTION III: HERMETIC PRINCIPLE ═══ -->
   <div class="section-header">
-    <span class="section-numeral">II</span>
+    <span class="section-numeral">III</span>
     <span class="section-title">THE HERMETIC PRINCIPLE &mdash; {principle.upper()}</span>
   </div>
   <div class="card section-content">{principle_html}</div>
 
-  <!-- ═══ SECTION III: SACRED VOWEL ═══ -->
-  <div class="section-header">
-    <span class="section-numeral">III</span>
-    <span class="section-title">THE SACRED VOWEL &mdash; {vowel}</span>
-  </div>
-  <div class="card section-content">{vowel_html}</div>
-
-  <!-- ═══ SECTION IV: THE CHANT ═══ -->
+  <!-- ═══ SECTION IV: VOWEL & CHANT ═══ -->
   <div class="section-header">
     <span class="section-numeral">IV</span>
-    <span class="section-title">THE CHANT</span>
+    <span class="section-title">YOUR VOWEL &amp; CHANT &mdash; {vowel}</span>
   </div>
-  <div class="card section-content">{chant_html}</div>
-
-  <!-- ═══ SECTION V: TODAY'S MEDITATION ═══ -->
-  <div class="section-header">
-    <span class="section-numeral">V</span>
-    <span class="section-title">TODAY&rsquo;S MEDITATION</span>
-  </div>
-  {f'<div class="mantra-line">{med_mantra}</div>' if med_mantra else ''}
-  <div class="card section-content">{med_body}</div>
+  <div class="card section-content">{voice_html}</div>
 
   <!-- ASTRAL SHIELD & SEAL -->
   <div class="seal-row">
