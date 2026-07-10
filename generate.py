@@ -1184,22 +1184,35 @@ SECTION 5 — TODAY'S MEDITATION
 ONE concise, flowing guided meditation weaving the whole day together: number {cal}, the principle of {principle}, {ruler}'s influence, the {moon['phase']} in Mansion {mansion[0]}, and the {vowel} chant at {freq} Hz{natal_hint}. Begin with a single mantra line in CAPS that invokes {wop}, then a calm, continuous meditation (not numbered steps) the practitioner can move through in a few minutes to center and carry the day. 160+ words."""
 
 def call_groq(prompt, api_key):
+    # Default to the proven llama-3.3-70b. For richer prose, set GROQ_MODEL to
+    # openai/gpt-oss-120b. Avoid groq/compound here — it's an agentic *system*
+    # (web search + code exec) with an 8k output cap that 413s on long generations.
+    model   = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+    payload = {
+        'model':       model,
+        'max_tokens':  2600,
+        'temperature': 0.82,
+        'messages': [
+            {'role': 'system', 'content': SYSTEM_PROMPT},
+            {'role': 'user',   'content': prompt},
+        ],
+    }
+    # Reasoning models (gpt-oss) — keep the chain-of-thought out of the answer.
+    if 'gpt-oss' in model:
+        payload['reasoning_effort'] = 'low'
+        payload['reasoning_format'] = 'hidden'
+
     resp = requests.post(
         'https://api.groq.com/openai/v1/chat/completions',
         headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
-        json={
-            'model': os.environ.get('GROQ_MODEL', 'groq/compound'),
-            'max_tokens': 2600,
-            'temperature': 0.82,
-            'messages': [
-                {'role': 'system', 'content': SYSTEM_PROMPT},
-                {'role': 'user',   'content': prompt},
-            ],
-        },
-        timeout=90,
+        json=payload,
+        timeout=120,
     )
     resp.raise_for_status()
-    return resp.json()['choices'][0]['message']['content'].strip()
+    content = resp.json()['choices'][0]['message']['content']
+    # Defensive: strip any leaked <think>…</think> reasoning block.
+    content = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL | re.IGNORECASE)
+    return content.strip()
 
 def _strip_section_header(text):
     # Groq sometimes echoes the "SECTION N — TITLE" instruction line back into
