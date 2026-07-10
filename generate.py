@@ -1101,9 +1101,11 @@ def calculate_convergence(lunar_data, ph, sky, cal_num, overrides):
 
 SYSTEM_PROMPT = """You are the Hermetic Oracle Engine — a synthesis of classical Hermetic philosophy, \
 Five Percenter Supreme Mathematics, Egyptian mystery tradition, Arabic lunar mansion science, \
-and Solfeggio frequency medicine. Your output is authoritative, mystically precise, technically exact. \
-Every ritual instruction must be physically executable. No hedging. No generic spiritual platitudes. \
-The practitioner reading this has deep esoteric knowledge and requires concrete operational guidance."""
+and Solfeggio frequency medicine. You speak to one practitioner with deep esoteric knowledge. \
+Your voice is a wise teacher's: offer insight, lesson, and parable — not step-by-step ritual choreography. \
+Help the practitioner STUDY each correspondence and read the day's events through it — how it might color \
+what they encounter and how they perceive it. Be concrete and specific to the day's real data. \
+No hedging, no generic spiritual platitudes, no assigned clock-time rituals."""
 
 def build_prompt(d):
     moon    = d['lunar']
@@ -1130,9 +1132,11 @@ def build_prompt(d):
     retro_txt = ', '.join(astro['retrogrades']) or 'none'
     asp_txt   = '; '.join(f"{x['a']} {x['aspect']} {x['b']}" for x in astro['aspects'][:6]) or 'no tight aspects'
     natal_line = ''
+    natal_hint = ''
     trs = d.get('transits') or []
     if d.get('natal') and trs:
         tr_txt = '; '.join(f"transiting {x['a']} {x['aspect']} natal {x['b']}" for x in trs[:6])
+        natal_hint = f", and the day's key transit to your own chart ({trs[0]['a']} {trs[0]['aspect']} natal {trs[0]['b']})"
         asc_txt = ''
         if d['natal'].get('ascendant'):
             _, (asc_s, asc_d) = d['natal']['ascendant']
@@ -1160,34 +1164,23 @@ Word of Power: {wop}
 Convergence Score: {d['convergence']}/100 — {d['convergence_tier']}
 Primary Activation Window: {sunrise}{ov_text}
 
-Generate EXACTLY 7 sections separated by the delimiter |SPLIT| with NO text before the first section.
-The "SECTION N —" lines below are labels telling you what each section must contain — do NOT reproduce them or write any title/header. Output only the body content for each section.
+Generate EXACTLY 5 sections separated by the delimiter |SPLIT| with NO text before the first section.
+The "SECTION N —" lines below tell you what each section must contain — do NOT reproduce them or write any title/header. Output only the body content. Write in second person, to the practitioner.
 
-SECTION 1 — THE DAY'S ESOTERIC MATHEMATICS
-Deep analysis of calendar number {cal} ({cal_sm[0]}) through Five Percenter Supreme Mathematics. Then base number {base} ({base_sm[0]}). End with EXACTLY HOW to embody both frequencies today: specific physical ritual actions tied to timing relative to sunrise at {sunrise}. NOT generic advice. 180+ words.
+SECTION 1 — SUPREME MATHEMATICS AS INSIGHT
+Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics as a lesson or short parable — the wisdom these numbers carry today. Then show how to study them and correspond them to your day: what to watch for, how these frequencies may color the events you meet and the way you read them. Reflective and specific. No ritual steps, no clock times. 150+ words.
 
 SECTION 2 — THE HERMETIC PRINCIPLE OF {principle.upper()}
-Cosmic mechanics of {principle} as expressed through {ruler}'s field today. Reference Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as active variables. Then THREE numbered concrete ritual applications — each must be a physical action the practitioner can execute before {sunrise}. 180+ words.
+Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens — where it is likely to appear and how to work with it in how you interpret what happens. No numbered rituals, no clock times. 150+ words.
 
-SECTION 3 — THE VOWEL CHANT PROTOCOL
-Complete physical instructions for the {vowel} vowel chant. Specify: body position, exact breath counts (inhale-hold-exhale), pitch (high/mid/low register), number of repetitions, exact physical location of resonance, and the inner sensation that signals correct activation. 120+ words. Be surgical and specific.
+SECTION 3 — THE SACRED VOWEL {vowel}
+Explain the {vowel} vowel as a tuning for today: what it corresponds to (the {chakra} center, {freq} Hz), the quality it invites, and how to weave the sound into an ordinary day — a breath here, a hum there — to stay attuned. Insight over protocol. 100+ words.
 
-SECTION 4 — THE UNIFIED MANTRA & MEDITATION
-First line — THE MANTRA (all caps, one line, must invoke {wop})
-Then: complete step-by-step meditation protocol. Exact breathing pattern with counts. Visualization sequence (opening scene → middle journey → integration → closing seal). How to use {freq} Hz. Precise closing action. 180+ words.
+SECTION 4 — THE CHANT
+Give the {vowel} chant as a living practice, briefly and usably: how breath and sound move, where it resonates, and — above all — WHY this sound serves this particular day. Understanding, not a clinical checklist. 100+ words.
 
-SECTION 5 — VISUALIZATION GATEWAY
-4-5 sentences. A vivid, specific inner landscape. Must include: the exact quality of {moon['phase']} light on this landscape, terrain aligned to {ruler} and {PLANET_ELEMENT[ruler]}, and a specific symbolic encounter with the essence of Mansion {mansion[0]} ({mansion[2]}). No golden mist. No generic light.
-
-SECTION 6 — HALL OF AMENTI: THE {ruler.upper()} TEMPLE
-3 precise sentences. Specific architectural materials, ambient sounds, scent, and atmospheric character of the {ruler} temple within the Hall of Amenti. Draw from authentic Egyptian/Hermetic tradition. Be specific.
-
-SECTION 7 — ORACLE INTELLIGENCE
-Format exactly as follows (include the Roman numerals and dash):
-I. ALIGNMENT ANALYSIS — [The celestial mechanics today and their combined operative vector]
-II. FIELD DIRECTIVE — [What this specific convergence demands of the practitioner — not generic]
-III. RITUAL DIRECTIVE — [Exact time {sunrise}, compass direction, body posture, first action]
-IV. TRANSMISSION — [One sentence beginning with the Word of Power {wop}]"""
+SECTION 5 — TODAY'S MEDITATION
+ONE concise, flowing guided meditation weaving the whole day together: number {cal}, the principle of {principle}, {ruler}'s influence, the {moon['phase']} in Mansion {mansion[0]}, and the {vowel} chant at {freq} Hz{natal_hint}. Begin with a single mantra line in CAPS that invokes {wop}, then a calm, continuous meditation (not numbered steps) the practitioner can move through in a few minutes to center and carry the day. 160+ words."""
 
 def call_groq(prompt, api_key):
     resp = requests.post(
@@ -1215,7 +1208,7 @@ def _strip_section_header(text):
 
 def parse_sections(text):
     parts  = text.split('|SPLIT|')
-    labels = ['math', 'principle', 'vowel', 'mantra', 'visualization', 'hall', 'oracle']
+    labels = ['math', 'principle', 'vowel', 'chant', 'meditation']
     result = {}
     for i, label in enumerate(labels):
         result[label] = _strip_section_header(parts[i]) if i < len(parts) else ''
@@ -1316,27 +1309,10 @@ def generate_html(data, sections, generated_at):
     math_html       = text_to_html(sections.get('math', ''))
     principle_html  = text_to_html(sections.get('principle', ''))
     vowel_html      = text_to_html(sections.get('vowel', ''))
-    mantra_raw      = sections.get('mantra', '')
-    mantra_line     = extract_mantra(mantra_raw)
-    mantra_body     = text_to_html(mantra_raw.replace(mantra_line, '', 1).strip())
-    viz_html        = text_to_html(sections.get('visualization', ''))
-    hall_html       = text_to_html(sections.get('hall', ''))
-    oracle_raw      = sections.get('oracle', '')
-    oracle_parsed   = extract_oracle_sections(oracle_raw)
-
-    # ── Oracle report ─────────────────────────────────────────────────────────
-    oracle_html = ''
-    labels_map  = {'I.': 'ALIGNMENT ANALYSIS', 'II.': 'PATTERN SIGNAL',
-                   'III.': 'RITUAL DIRECTIVE', 'IV.': 'TRANSMISSION'}
-    for (num, label, body) in oracle_parsed:
-        is_tx = 'IV' in num or 'TRANSMISSION' in label
-        body_class = 'oracle-text transmission-text' if is_tx else 'oracle-text'
-        display_label = label if label else labels_map.get(num, '')
-        oracle_html += f"""
-      <div class="oracle-section">
-        <div class="oracle-num">{num} {display_label}</div>
-        <div class="{body_class}">{body.replace(chr(10),'<br>')}</div>
-      </div>"""
+    chant_html      = text_to_html(sections.get('chant', ''))
+    med_raw         = sections.get('meditation', '')
+    med_mantra      = extract_mantra(med_raw)
+    med_body        = text_to_html(med_raw.replace(med_mantra, '', 1).strip()) if med_mantra else text_to_html(med_raw)
 
     # ── Planet positions summary ──────────────────────────────────────────────
     pos = sky['positions']
@@ -1687,7 +1663,7 @@ def generate_html(data, sections, generated_at):
   <!-- ═══ SECTION I: ESOTERIC MATHEMATICS ═══ -->
   <div class="section-header">
     <span class="section-numeral">I</span>
-    <span class="section-title">THE DAY&rsquo;S ESOTERIC MATHEMATICS</span>
+    <span class="section-title">SUPREME MATHEMATICS</span>
   </div>
   <div class="card section-content">{math_html}</div>
 
@@ -1698,34 +1674,27 @@ def generate_html(data, sections, generated_at):
   </div>
   <div class="card section-content">{principle_html}</div>
 
-  <!-- ═══ SECTION III: VOWEL CHANT ═══ -->
+  <!-- ═══ SECTION III: SACRED VOWEL ═══ -->
   <div class="section-header">
     <span class="section-numeral">III</span>
-    <span class="section-title">THE VOWEL CHANT PROTOCOL &mdash; {vowel}</span>
+    <span class="section-title">THE SACRED VOWEL &mdash; {vowel}</span>
   </div>
   <div class="card section-content">{vowel_html}</div>
 
-  <!-- ═══ SECTION IV: MANTRA & MEDITATION ═══ -->
+  <!-- ═══ SECTION IV: THE CHANT ═══ -->
   <div class="section-header">
     <span class="section-numeral">IV</span>
-    <span class="section-title">THE UNIFIED MANTRA &amp; MEDITATION</span>
+    <span class="section-title">THE CHANT</span>
   </div>
-  {f'<div class="mantra-line">{mantra_line}</div>' if mantra_line else ''}
-  <div class="card section-content">{mantra_body}</div>
+  <div class="card section-content">{chant_html}</div>
 
-  <!-- VISUALIZATION GATEWAY -->
+  <!-- ═══ SECTION V: TODAY'S MEDITATION ═══ -->
   <div class="section-header">
-    <span class="section-numeral">&#9790;</span>
-    <span class="section-title">VISUALIZATION GATEWAY</span>
+    <span class="section-numeral">V</span>
+    <span class="section-title">TODAY&rsquo;S MEDITATION</span>
   </div>
-  <div class="gateway-card">{viz_html}</div>
-
-  <!-- HALL OF AMENTI -->
-  <div class="section-header">
-    <span class="section-numeral">&#9993;</span>
-    <span class="section-title">HALL OF AMENTI &mdash; THE {ruler.upper()} TEMPLE</span>
-  </div>
-  <div class="gateway-card">{hall_html}</div>
+  {f'<div class="mantra-line">{med_mantra}</div>' if med_mantra else ''}
+  <div class="card section-content">{med_body}</div>
 
   <!-- ASTRAL SHIELD & SEAL -->
   <div class="seal-row">
@@ -1741,13 +1710,6 @@ def generate_html(data, sections, generated_at):
       <div class="formula-key">{formula_key}</div>
     </div>
   </div>
-
-  <!-- ORACLE INTELLIGENCE REPORT -->
-  <div class="section-header">
-    <span class="section-numeral">&#9670;</span>
-    <span class="section-title">ORACLE INTELLIGENCE REPORT</span>
-  </div>
-  <div class="card">{oracle_html}</div>
 
 </div><!-- /container -->
 
