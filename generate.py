@@ -72,13 +72,13 @@ PLANET_FREQUENCY = {
 }
 
 PLANET_VOWEL = {
-    'Sun':     ('AH',  'Solar Plexus (Manipura)',               'Radiates solar warmth; ignites will and identity'),
-    'Moon':    ('OOO', 'Sacral + Crown (Svadhisthana/Sahasrara)','Opens lunar flow; activates emotional intelligence'),
-    'Mars':    ('AH',  'Navel (Manipura)',                       'Fires kinetic drive; galvanizes action and courage'),
-    'Mercury': ('EEE', 'Throat (Vishuddha)',                     'Sharpens mercurial cognition; attunes transmission'),
-    'Jupiter': ('OH',  'Crown (Sahasrara)',                      'Expands Jovian wisdom; opens the higher mind'),
-    'Venus':   ('AYE', 'Heart (Anahata)',                        'Harmonizes Venusian resonance; magnetizes beauty'),
-    'Saturn':  ('UH',  'Root (Muladhara)',                       'Grounds Saturnine wisdom; builds structural integrity'),
+    'Sun':     ('Iota (ee)',    'Solar Plexus (Manipura)',                'Radiates solar warmth; ignites will and identity'),
+    'Moon':    ('Alpha (ah)',   'Sacral + Crown (Svadhisthana/Sahasrara)','Opens lunar flow; activates emotional intelligence'),
+    'Mars':    ('Omicron (o)',  'Navel (Manipura)',                       'Fires kinetic drive; galvanizes action and courage'),
+    'Mercury': ('Epsilon (eh)', 'Throat (Vishuddha)',                     'Sharpens mercurial cognition; attunes transmission'),
+    'Jupiter': ('Upsilon (\u00fc)', 'Crown (Sahasrara)',                  'Expands Jovian wisdom; opens the higher mind'),
+    'Venus':   ('Eta (ey)',     'Heart (Anahata)',                        'Harmonizes Venusian resonance; magnetizes beauty'),
+    'Saturn':  ('Omega (oh)',   'Root (Muladhara)',                       'Grounds Saturnine wisdom; builds structural integrity'),
 }
 
 PLANET_METAL   = {'Sun': 'Gold',    'Moon': 'Silver',      'Mars': 'Iron',
@@ -1104,7 +1104,8 @@ Five Percenter Supreme Mathematics, Egyptian mystery tradition, Arabic lunar man
 and Solfeggio frequency medicine. You speak to one practitioner with deep esoteric knowledge. \
 Your voice is a wise teacher's: offer insight, lesson, and parable — not step-by-step ritual choreography. \
 Help the practitioner STUDY each correspondence and read the day's events through it — how it might color \
-what they encounter and how they perceive it. Be concrete and specific to the day's real data. \
+what they encounter and how they perceive it. Teach through concrete images, brief parables, and lived \
+examples rather than restating definitions back to them. Be concrete and specific to the day's real data. \
 No hedging, no generic spiritual platitudes, no assigned clock-time rituals."""
 
 def build_prompt(d):
@@ -1168,7 +1169,7 @@ Generate EXACTLY 5 sections separated by the delimiter |SPLIT| with NO text befo
 The "SECTION N —" lines below tell you what each section must contain — do NOT reproduce them or write any title/header. Output only the body content. Write in second person, to the practitioner.
 
 SECTION 1 — SUPREME MATHEMATICS AS INSIGHT
-Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics as a lesson or short parable — the wisdom these numbers carry today. Then show how to study them and correspond them to your day: what to watch for, how these frequencies may color the events you meet and the way you read them. Reflective and specific. No ritual steps, no clock times. 150+ words.
+Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — instead teach through ONE concrete parable, image, or lived example that carries their wisdom for today. Then show how to study them against your day: what to watch for, how these frequencies may color the events you meet and the way you read them. Reflective and specific, grounded in a single vivid image rather than abstractions. No ritual steps, no clock times. 150+ words.
 
 SECTION 2 — THE HERMETIC PRINCIPLE OF {principle.upper()}
 Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens — where it is likely to appear and how to work with it in how you interpret what happens. No numbered rituals, no clock times. 150+ words.
@@ -1187,7 +1188,7 @@ def call_groq(prompt, api_key):
         'https://api.groq.com/openai/v1/chat/completions',
         headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
         json={
-            'model': 'llama-3.3-70b-versatile',
+            'model': os.environ.get('GROQ_MODEL', 'groq/compound'),
             'max_tokens': 2600,
             'temperature': 0.82,
             'messages': [
