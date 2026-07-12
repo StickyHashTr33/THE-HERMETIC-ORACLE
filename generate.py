@@ -18,6 +18,7 @@ import pytz
 import requests
 import os
 import sys
+import time
 from pathlib import Path
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1180,21 +1181,94 @@ Teach the principle of {principle} as it moves through {ruler}'s field today, wi
 [[4]] — YOUR VOWEL & CHANT
 Give the {vowel} vowel and its chant as ONE short practice: what it tunes (the {chakra} center, {freq} Hz), the quality it invites, and how to use it briefly through the day — a breath, a hum. Weave in the Word of Power {wop} as the day's word. One compact, usable practice — not a long meditation. 90+ words."""
 
-def call_groq(prompt, api_key):
-    # Default to the proven llama-3.3-70b. For richer prose, set GROQ_MODEL to
-    # openai/gpt-oss-120b. Avoid groq/compound here — it's an agentic *system*
-    # (web search + code exec) with an 8k output cap that 413s on long generations.
-    model   = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+def build_section_prompts(d):
+    """Returns (shared_context, [(label, brief), ...]). Each section is generated
+    in its own request so verbose/reasoning models can't crowd sections out."""
+    moon    = d['lunar']
+    ph      = d['planetary_hour']
+    sky     = d['sky']
+    cal     = d['numerology']['calendar']
+    base    = d['numerology']['base']
+    ruler   = d['day_ruler']
+    mansion = moon['mansion']
+    cal_sm  = SUPREME_MATH.get(cal, SUPREME_MATH[cal % 10])
+    base_sm = SUPREME_MATH.get(base, SUPREME_MATH[base % 10])
+    sunrise = fmt(d['solar'].get('sunrise'))
+    vowel, chakra, _ = PLANET_VOWEL[ruler]
+    principle = PLANET_PRINCIPLE[ruler]
+    freq      = PLANET_FREQUENCY[ruler]
+    wop       = WORDS_OF_POWER[ruler]
+    ov_text   = ''
+    if d['overrides']:
+        ov = d['overrides'][0]
+        ov_text = f"\nACTIVE OVERRIDE: {ov['name']} — {ov['message']}"
+
+    astro     = d['astro']
+    moon_sign = astro['signs']['Moon'][0]
+    sky_signs = ', '.join(f"{n} in {s} {deg:.0f}\u00b0" for n, (s, deg) in astro['signs'].items())
+    retro_txt = ', '.join(astro['retrogrades']) or 'none'
+    asp_txt   = '; '.join(f"{x['a']} {x['aspect']} {x['b']}" for x in astro['aspects'][:6]) or 'no tight aspects'
+    natal_line = ''
+    trs = d.get('transits') or []
+    if d.get('natal') and trs:
+        tr_txt = '; '.join(f"transiting {x['a']} {x['aspect']} natal {x['b']}" for x in trs[:6])
+        asc_txt = ''
+        if d['natal'].get('ascendant'):
+            _, (asc_s, asc_d) = d['natal']['ascendant']
+            asc_txt = f" | Natal Ascendant {asc_s} {asc_d:.0f}\u00b0"
+        natal_line = ("\nNATAL TRANSITS (this querent's OWN birth chart — treat as deeply personal; "
+                      f"address them directly and specifically){asc_txt}: {tr_txt}")
+
+    context = f"""UNIFIED HERMETIC ORACLE — {d['date_str']} — {CITY}
+
+COMPUTED ASTRONOMICAL PARAMETERS:
+Day Ruler: {ruler} | Metal: {PLANET_METAL[ruler]} | Element: {PLANET_ELEMENT[ruler]}
+Planetary Hour: Ruler={ph['ruler']}, Hour #{ph['hour_num']} ({ph['period']}), {ph['minutes_remaining']} min remaining
+Sky Geometry: Zenith={sky['zenith']} | Ascendant={sky['ascendant']}
+Living Sky (real positions): {sky_signs}
+Retrograde: {retro_txt}
+Current Aspects: {asp_txt}{natal_line}
+Lunar Phase: {moon['phase']} | {moon['illumination']:.1f}% illuminated | Age: {moon['age']:.1f} days
+Lunar Mansion #{mansion[0]}: {mansion[1]} ({mansion[2]}) — {mansion[3]}
+Calendar Numerology: {cal} = {cal_sm[0]} — {cal_sm[1]}
+Base Number (day of month): {base} = {base_sm[0]} — {base_sm[1]}
+Primary Hermetic Principle: {principle}
+Solfeggio Frequency: {freq} Hz
+Sacred Vowel: {vowel} | Resonant Chakra: {chakra}
+Word of Power: {wop}
+Convergence Score: {d['convergence']}/100 — {d['convergence_tier']}
+Primary Activation Window: {sunrise}{ov_text}"""
+
+    briefs = [
+        ('forecast', f"""ENERGY FORECAST FOR THE DAY
+Write a grounded forecast for how to move through and plan today's energies — like a wise spiritual guide who also reads the real sky with precision. Ground every observation in the data above: the {ruler} day and how its planetary hours flow, the {moon['phase']} Moon in {moon_sign}, the current aspects, any retrogrades, and especially the tightest transits to the practitioner's own natal chart. Tell them concretely where the day leans, when to lead versus yield, which kinds of work the hours favor and which to hold back, and which personal currents to consciously work with — but speak with warmth and spiritual counsel, not clinical detachment. Name where grace and where friction may live today, and how to hold their energy with intention. Close with one sentence of genuine spiritual guidance for carrying themselves through the day. Real sky, soulful voice. 180 words."""),
+        ('math', f"""SUPREME MATHEMATICS AS INSIGHT
+Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — teach through ONE concrete parable or image that carries their wisdom for today, then show how to read the day's events through them. 130 words."""),
+        ('principle', f"""THE HERMETIC PRINCIPLE OF {principle.upper()}
+Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens. 130 words."""),
+        ('voice', f"""YOUR VOWEL & CHANT
+Give the {vowel} vowel and its chant as ONE short practice: what it tunes (the {chakra} center, {freq} Hz), the quality it invites, and how to use it briefly through the day — a breath, a hum. Weave in the Word of Power {wop} as the day's word. One compact, usable practice — not a long meditation. 90 words."""),
+    ]
+    return context, briefs
+
+
+def call_groq_section(context, brief, api_key):
+    """Generate a single section. Each section is its own request so a verbose
+    or reasoning model can't run out of room mid-reading."""
+    model = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+    user  = (context +
+             "\n\nWrite ONLY the following section, as flowing prose in second person. "
+             "No title, no heading, no markers, no preamble — output just the section's text.\n\n"
+             + brief)
     payload = {
         'model':       model,
-        'max_tokens':  2600,
+        'max_tokens':  1500,
         'temperature': 0.82,
         'messages': [
             {'role': 'system', 'content': SYSTEM_PROMPT},
-            {'role': 'user',   'content': prompt},
+            {'role': 'user',   'content': user},
         ],
     }
-    # Reasoning models (gpt-oss) — keep the chain-of-thought out of the answer.
     if 'gpt-oss' in model:
         payload['reasoning_effort'] = 'low'
         payload['reasoning_format'] = 'hidden'
@@ -1202,12 +1276,10 @@ def call_groq(prompt, api_key):
     resp = requests.post(
         'https://api.groq.com/openai/v1/chat/completions',
         headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
-        json=payload,
-        timeout=120,
+        json=payload, timeout=120,
     )
     resp.raise_for_status()
     content = resp.json()['choices'][0]['message']['content']
-    # Defensive: strip any leaked <think>…</think> reasoning block.
     content = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL | re.IGNORECASE)
     return content.strip()
 
@@ -1898,21 +1970,21 @@ def main():
 
     # ── Groq synthesis ────────────────────────────────────────────────────────
     sections = {}
+    labels   = ['forecast', 'math', 'principle', 'voice']
     if api_key:
-        try:
-            print('[Oracle] Calling Groq API ...')
-            prompt   = build_prompt(data)
-            response = call_groq(prompt, api_key)
-            sections = parse_sections(response)
-            print(f'[Oracle] Groq response: {sum(len(v) for v in sections.values())} chars across {len(sections)} sections')
-        except Exception as e:
-            print(f'[Oracle] Groq error: {e}')
-            sections = {label: f'[Section not generated — API error: {e}]'
-                        for label in ['math','principle','vowel','mantra','visualization','hall','oracle']}
+        context, briefs = build_section_prompts(data)
+        print(f'[Oracle] Generating {len(briefs)} sections (one request each) ...')
+        for label, brief in briefs:
+            try:
+                sections[label] = call_groq_section(context, brief, api_key)
+                print(f'[Oracle]   done: {label} ({len(sections[label])} chars)')
+            except Exception as e:
+                sections[label] = f'[Section not generated — API error: {e}]'
+                print(f'[Oracle]   FAILED: {label} — {e}')
+            time.sleep(2)   # let the token bucket refill between calls
     else:
         placeholder = '[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]'
-        sections = {label: placeholder
-                    for label in ['math','principle','vowel','mantra','visualization','hall','oracle']}
+        sections = {label: placeholder for label in labels}
 
     # ── Generate HTML ─────────────────────────────────────────────────────────
     print('[Oracle] Generating HTML ...')
