@@ -86,66 +86,51 @@ VOWEL_SCIENCE = {
     'Sun': {
         'sound': 'EE (as in "see")', 'mouth': 'Narrow, lips spread, tongue high and forward',
         'body_zone': 'Head, sinuses, and crown',
-        'vagal': 'Highest-frequency vowel — vibrations concentrate in the cranium and stimulate '
-                 'the auricular branch of the vagus near the ear canal, the same pathway targeted '
-                 'by clinical transcutaneous VNS devices. The Sun\'s vowel sits at the center of '
-                 'the planetary heptachord — the mesê note.',
-        'felt': 'a bright pressure behind the forehead, a clearing of the sinuses, a sharpening '
-                'of focus as the cranial vibration stimulates the auricular vagal branch near each ear',
+        'vagal': 'Highest-frequency vowel — cranial vibration stimulates the auricular vagal branch near each ear, '
+                 'the same pathway targeted by clinical transcutaneous VNS devices.',
+        'felt': 'a bright pressure behind the forehead, sinuses clearing, focus sharpening',
     },
     'Moon': {
         'sound': 'AH (as in "father")', 'mouth': 'Wide open, jaw dropped, tongue flat',
         'body_zone': 'Heart center and chest cavity',
-        'vagal': 'The open chest resonance directly vibrates the thoracic vagal trunk. The wide-open '
-                 'airway maximizes exhalation volume, deepening baroreflex activation. Closest to the '
-                 'classic heart-opening tone used in sound therapy.',
-        'felt': 'the jaw releasing, the ribcage expanding, the heartbeat becoming perceptible in the '
-                'palms — a settling into the chest that quiets the mental chatter within three breaths',
+        'vagal': 'Open chest resonance directly vibrates the thoracic vagal trunk. Wide-open airway maximizes '
+                 'exhalation volume, deepening baroreflex activation.',
+        'felt': 'jaw releasing, ribcage expanding, heartbeat becoming perceptible in the palms',
     },
     'Mars': {
         'sound': 'OH (as in "go", short)', 'mouth': 'Rounded, lips forward, moderate opening',
         'body_zone': 'Solar plexus and upper abdomen',
-        'vagal': 'Rounded lip position creates back-pressure that extends exhalation. Abdominal '
-                 'resonance activates the ventral vagal complex. Mars energy channeled through '
-                 'controlled pressure, not explosive release.',
-        'felt': 'a warm compression in the solar plexus, the belly firming without clenching — '
-                'the body\'s own armor engaging as the exhale carries tension out through rounded lips',
+        'vagal': 'Rounded lip position creates back-pressure extending exhalation. Abdominal resonance activates '
+                 'the ventral vagal complex — Mars energy channeled through controlled pressure.',
+        'felt': 'warm compression in the solar plexus, belly firming without clenching',
     },
     'Mercury': {
         'sound': 'EH (as in "bed")', 'mouth': 'Mid-open, tongue slightly raised, lips neutral',
         'body_zone': 'Throat and upper chest',
-        'vagal': 'Resonates precisely where the recurrent laryngeal branch of the vagus wraps the '
-                 'vocal folds. Mercury\'s vowel literally vibrates the nerve it activates. The mid-pitch '
-                 'engages both chest and head resonance.',
-        'felt': 'the throat warming, a hum settling into the collarbones, words that follow coming '
-                'clearer — as if the vocal instrument tuned itself',
+        'vagal': 'Resonates where the recurrent laryngeal branch of the vagus wraps the vocal folds. '
+                 'Mercury\'s vowel literally vibrates the nerve it activates.',
+        'felt': 'throat warming, a hum settling into the collarbones, words coming clearer afterward',
     },
     'Jupiter': {
         'sound': 'OO (as in "moon")', 'mouth': 'Tightly rounded, lips pursed forward, tongue pulled back',
         'body_zone': 'Lower abdomen and pelvic floor',
-        'vagal': 'The deepest, most grounding vowel. Maximum lip rounding creates the longest exhalation '
-                 'path. Deep abdominal vibration overlaps with the "VOO" tone used in clinical trauma '
-                 'therapy (Somatic Experiencing) for vagal reset.',
-        'felt': 'a low hum that drops from the navel to the pelvic floor, the body\'s center of gravity '
-                'lowering, the breath becoming oceanic — each exhale longer than the last',
+        'vagal': 'Deepest vowel — maximum lip rounding creates the longest exhalation path. Deep abdominal '
+                 'vibration overlaps with the clinical VOO tone used for vagal reset in trauma therapy.',
+        'felt': 'a low hum dropping from navel to pelvic floor, center of gravity lowering, breath becoming oceanic',
     },
     'Venus': {
         'sound': 'AY (as in "hey", sustained)', 'mouth': 'Lips slightly spread, tongue mid-high, horizontal opening',
         'body_zone': 'Upper chest to lower throat bridge',
-        'vagal': 'The horizontal mouth shape creates a smooth, sustained tone that naturally extends '
-                 'the exhale phase, maximizing respiratory sinus arrhythmia. Classified by Aristides '
-                 'Quintilianus as the "female" vowel — fluent, receptive, flowing.',
-        'felt': 'a warmth spreading from the sternum upward into the throat, the heart rate '
-                'noticeably slowing, the face softening — the body shifting from doing to receiving',
+        'vagal': 'Horizontal mouth shape creates a smooth, sustained tone naturally extending the exhale phase, '
+                 'maximizing respiratory sinus arrhythmia.',
+        'felt': 'warmth spreading from sternum into throat, heart rate noticeably slowing, face softening',
     },
     'Saturn': {
         'sound': 'AW (as in "law", sustained)', 'mouth': 'Wide-rounded, jaw moderately dropped, back of tongue raised',
         'body_zone': 'Full torso — chest through pelvis',
-        'vagal': 'Wide-round shape engages the full vocal tract, creating whole-body resonance that '
-                 'mimics the low-frequency pattern shown in fMRI studies to deactivate the amygdala '
-                 'bilaterally. Saturn\'s vowel literally quiets the fear center.',
-        'felt': 'a vibration that fills the entire trunk, the body becoming heavier and more still, '
-                'the mind\'s chatter compressing into silence — the way a bell stops ringing',
+        'vagal': 'Wide-round shape engages the full vocal tract, creating whole-body resonance that mirrors '
+                 'the low-frequency pattern shown to deactivate the amygdala bilaterally.',
+        'felt': 'vibration filling the entire trunk, body becoming heavier and more still, mental chatter compressing into silence',
     },
 }
 
@@ -1172,26 +1157,22 @@ philosophy, Five Percenter Supreme Mathematics, Egyptian mystery tradition, Arab
 science, and real-time astronomical data into deeply personalized daily guidance.
 
 VOICE: Speak as a wise elder who has lived these principles — through parable, lived example, and \
-direct address. Never generic ritual choreography. Every sentence must earn its place by being \
-genuinely useful to the reader's day.
+direct address. Never generic ritual choreography. Every sentence earns its place by being useful.
 
 BIOPHYSICAL GROUNDING (use naturally, never lecture):
-You understand the neurobiology behind the practices you prescribe:
-- Sustained vowel toning activates the vagus nerve via Respiratory Vagal Nerve Stimulation (rVNS). \
-  The vagus runs alongside the vocal cords; vocalization directly stimulates vagal afferent fibers.
-- This triggers a parasympathetic cascade: extended exhalation → baroreflex activation → heart rate \
-  slowing → HRV increase → cortisol reduction → limbic deactivation (amygdala quiets — fMRI-confirmed).
-- Breathing at ~6 breaths/minute (~0.1 Hz) induces cardiac coherence — a smooth, sine-wave HRV \
-  pattern where cardiovascular, respiratory, and autonomic systems synchronize.
-- The heart generates the body's strongest biological EM field: 60x the brain's electrical amplitude, \
-  100-5000x its magnetic field, detectable 3+ feet away.
-- Different vowel shapes resonate in different body zones: high/front vowels (Iota "ee") in the head; \
-  open vowels (Alpha "ah") in the chest; back vowels (Omega "aw") in the abdomen.
-USE THIS to make chant instructions visceral and embodied — WHERE they'll feel it, WHAT shifts, WHY \
-it matters for their day. Weave it as the oracle's own knowing. The oracle doesn't footnote.
+You understand why the practices you prescribe work in the body:
+- Sustained vowel toning activates the vagus nerve (rVNS) — the vagus runs alongside the vocal cords; \
+  vocalization directly stimulates it, triggering a parasympathetic cascade: extended exhalation → \
+  baroreflex activation → heart rate slowing → cortisol reduction → limbic deactivation.
+- Breathing at ~6 breaths/minute (~0.1 Hz) induces cardiac coherence — cardiovascular, respiratory, \
+  and autonomic systems synchronizing into a single rhythm.
+- The heart generates the body's strongest biological EM field: 60x the brain's electrical amplitude.
+- Different vowels resonate in different body zones: high vowels (Iota) in the head; open vowels \
+  (Alpha) in the chest; back vowels (Omega) in the abdomen.
+USE THIS to make instructions visceral — WHERE they'll feel it, WHAT shifts. The oracle doesn't footnote.
 
-CONSTRAINTS: Ground every claim in the actual astronomical data. Write for a daily practitioner who \
-notices recycled language. Mobile-first: tight paragraphs, no filler, no headers within sections."""
+CONSTRAINTS: Ground every claim in the actual astronomical data. Write for a daily practitioner. \
+Mobile-first: tight paragraphs, no filler, no headers within sections."""
 
 def build_prompt(d):
     moon    = d['lunar']
@@ -1328,38 +1309,30 @@ Primary Activation Window: {sunrise}{ov_text}"""
 
     briefs = [
         ('forecast', f"""ENERGY FORECAST FOR THE DAY
-Write a grounded forecast for how to move through and plan today's energies — like a wise spiritual guide who reads the real sky with precision. Ground every observation in the data above: the {ruler} day and how its planetary hours flow, the {moon['phase']} Moon in {moon_sign}, the current aspects, any retrogrades, and especially the tightest transits to the practitioner's own natal chart. Tell them concretely where the day leans, when to lead versus yield, which kinds of work the hours favor and which to hold back, and which personal currents to consciously work with — but speak with warmth and spiritual counsel, not clinical detachment. Name where grace and where friction may live today, and how to hold their energy with intention.
-SOMATIC THREAD: Close by referencing today's vowel ({vs['sound']}) as a practical physiological tool — not just ritual but a vagal reset they can use in the body when the day's energy needs recalibrating. One line, woven naturally: "When the afternoon heats up, three breaths of {vs['sound']} in the {vs['body_zone'].lower()} will settle you." Make it feel like practical advice from someone who knows the body, not prescription. 180 words."""),
+Write a grounded forecast for today's energies. Ground every observation in the data above: the {ruler} day and its planetary hours, the {moon['phase']} Moon in {moon_sign}, aspects, retrogrades, and natal transits. Tell them where the day leans, when to lead versus yield, which work the hours favor. Name where grace and friction live today.
+Close with a somatic thread: today's vowel ({vs['sound']}) as a practical reset — "When the energy shifts, three breaths of {vs['sound']} in the {vs['body_zone'].lower()} will settle you." Warm spiritual counsel, not clinical. 180 words."""),
         ('math', f"""SUPREME MATHEMATICS AS INSIGHT
 Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — teach through ONE concrete parable or image that carries their wisdom for today, then show how to read the day's events through them. 130 words."""),
         ('principle', f"""THE HERMETIC PRINCIPLE OF {principle.upper()}
-Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens.{" If this principle is Vibration: you may note that Section IV's vowel practice is a literal, physiological application — shifting the body's vibrational state at the autonomic level through vocal resonance. One sentence, not a tangent." if principle == 'Vibration' else ''} 130 words."""),
+Teach {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame as insight or parable, then show how to perceive today's events through this lens.{" Note: today's vowel practice in Section IV is a literal physiological application of Vibration — shifting the body's state at the autonomic level through vocal resonance. One sentence, not a tangent." if principle == 'Vibration' else ''} 130 words."""),
         ('voice', f"""VOWEL & CHANT — THE PRACTICE
-Today's planetary vowel: {vowel} | Sound: {vs['sound']} | Planet: {ruler}
-Mouth position: {vs['mouth']}
-Body resonance zone: {vs['body_zone']}
-Vagal mechanism: {vs['vagal']}
-What the practitioner will feel: {vs['felt']}
+Today's vowel: {vowel} | Sound: {vs['sound']} | Planet: {ruler}
+Mouth: {vs['mouth']} | Resonance zone: {vs['body_zone']}
+What they'll feel: {vs['felt']}
 Solfeggio: {freq} Hz | Chakra: {chakra} | Word of Power: {wop}
 
-Write a combined vowel + chant practice that bridges the esoteric and the somatic:
-
-1. OPEN with the vowel as a physical act, not a symbol. Describe the mouth shape, where the vibration lands in the body ({vs['body_zone']}), and what the reader will FEEL as the practice takes hold — {vs['felt']}. Don't use clinical language; translate it into the oracle's embodied voice.
-
-2. GIVE THE PRACTICE: Breathe in for 4 counts, sustain the {vs['sound']} vowel on the exhale for 8 counts. This ratio targets ~6 breaths/minute — the body's cardiac coherence window where the heartbeat, breath, and blood pressure synchronize into a single rhythm. Seven repetitions (one for each classical planet). Seated, spine straight, hands placed on the {vs['body_zone'].lower()}.
-
-3. CONNECT to today's planetary hour: practice during a {ruler} hour for maximum alignment. Reference what the practice does to the body's coherence during that window — the heart's electromagnetic field organizing, the amygdala quieting, the autonomic system shifting from reactive to receptive. Say it like the oracle knows it from experience, not from a paper.
-
-4. CLOSE with the Word of Power {wop} as a seal — spoken once after the seventh breath, hands pressed to the resonant center. This is the day's word. Weave it into a closing line that makes the reader feel the practice is complete and carried with them.
-
-CRITICAL: The reader should finish understanding they are using an ancient vocal technology that measurably shifts their nervous system — but say it like an oracle, not a textbook. 160 words."""),
+Write a combined vowel + chant practice bridging esoteric and somatic:
+1. OPEN with the vowel as physical act — mouth shape, where vibration lands ({vs['body_zone']}), what the reader FEELS ({vs['felt']}). Oracle voice, not clinical.
+2. THE PRACTICE: Breathe in 4 counts, sustain {vs['sound']} on exhale for 8 counts (targets ~6 breaths/min — cardiac coherence window). Seven repetitions. Seated, spine straight, hands on {vs['body_zone'].lower()}.
+3. CONNECT to a {ruler} hour for timing. What the practice does to the body's coherence — heartbeat, breath, and blood pressure synchronizing. Say it like you know it from experience.
+4. SEAL with Word of Power {wop} — spoken once after the seventh breath. Close so they feel the practice is complete and carried with them.
+The reader should finish knowing this is ancient vocal technology that genuinely shifts their nervous system. Say it like an oracle. 150 words."""),
     ]
     return context, briefs
 
 
-def call_groq_section(context, brief, api_key):
-    """Generate a single section. Each section is its own request so a verbose
-    or reasoning model can't run out of room mid-reading."""
+def call_groq_section(context, brief, api_key, max_retries=3):
+    """Generate a single section with retry/backoff for 429 rate limits."""
     model = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
     user  = (context +
              "\n\nWrite ONLY the following section, as flowing prose in second person. "
@@ -1378,15 +1351,33 @@ def call_groq_section(context, brief, api_key):
         payload['reasoning_effort'] = 'low'
         payload['reasoning_format'] = 'hidden'
 
-    resp = requests.post(
-        'https://api.groq.com/openai/v1/chat/completions',
-        headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
-        json=payload, timeout=120,
-    )
+    for attempt in range(max_retries):
+        resp = requests.post(
+            'https://api.groq.com/openai/v1/chat/completions',
+            headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
+            json=payload, timeout=120,
+        )
+        if resp.status_code == 429:
+            # Rate limited — back off exponentially: 8s, 16s, 32s
+            wait = 8 * (2 ** attempt)
+            print(f'[Oracle]   429 rate limit — retrying in {wait}s (attempt {attempt + 1}/{max_retries})')
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        content = resp.json()['choices'][0]['message']['content']
+        content = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL | re.IGNORECASE)
+        result = content.strip()
+        if not result:
+            # Empty response — retry once with a nudge
+            if attempt < max_retries - 1:
+                print(f'[Oracle]   empty response — retrying in 6s')
+                time.sleep(6)
+                continue
+        return result
+
+    # All retries exhausted — raise so the caller sees it
     resp.raise_for_status()
-    content = resp.json()['choices'][0]['message']['content']
-    content = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL | re.IGNORECASE)
-    return content.strip()
+    return ''
 
 def _strip_section_header(text):
     # Groq sometimes echoes the "SECTION N — TITLE" instruction line back into
@@ -2086,7 +2077,7 @@ def main():
             except Exception as e:
                 sections[label] = f'[Section not generated — API error: {e}]'
                 print(f'[Oracle]   FAILED: {label} — {e}')
-            time.sleep(2)   # let the token bucket refill between calls
+            time.sleep(5)   # let the token bucket refill between calls
     else:
         placeholder = '[Groq API key not configured — add GROQ_API_KEY to GitHub Secrets]'
         sections = {label: placeholder for label in labels}
