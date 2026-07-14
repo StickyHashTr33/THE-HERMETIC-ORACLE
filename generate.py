@@ -82,6 +82,73 @@ PLANET_VOWEL = {
     'Saturn':  ('Omega (oh)',   'Root (Muladhara)',                       'Grounds Saturnine wisdom; builds structural integrity'),
 }
 
+VOWEL_SCIENCE = {
+    'Sun': {
+        'sound': 'EE (as in "see")', 'mouth': 'Narrow, lips spread, tongue high and forward',
+        'body_zone': 'Head, sinuses, and crown',
+        'vagal': 'Highest-frequency vowel — vibrations concentrate in the cranium and stimulate '
+                 'the auricular branch of the vagus near the ear canal, the same pathway targeted '
+                 'by clinical transcutaneous VNS devices. The Sun\'s vowel sits at the center of '
+                 'the planetary heptachord — the mesê note.',
+        'felt': 'a bright pressure behind the forehead, a clearing of the sinuses, a sharpening '
+                'of focus as the cranial vibration stimulates the auricular vagal branch near each ear',
+    },
+    'Moon': {
+        'sound': 'AH (as in "father")', 'mouth': 'Wide open, jaw dropped, tongue flat',
+        'body_zone': 'Heart center and chest cavity',
+        'vagal': 'The open chest resonance directly vibrates the thoracic vagal trunk. The wide-open '
+                 'airway maximizes exhalation volume, deepening baroreflex activation. Closest to the '
+                 'classic heart-opening tone used in sound therapy.',
+        'felt': 'the jaw releasing, the ribcage expanding, the heartbeat becoming perceptible in the '
+                'palms — a settling into the chest that quiets the mental chatter within three breaths',
+    },
+    'Mars': {
+        'sound': 'OH (as in "go", short)', 'mouth': 'Rounded, lips forward, moderate opening',
+        'body_zone': 'Solar plexus and upper abdomen',
+        'vagal': 'Rounded lip position creates back-pressure that extends exhalation. Abdominal '
+                 'resonance activates the ventral vagal complex. Mars energy channeled through '
+                 'controlled pressure, not explosive release.',
+        'felt': 'a warm compression in the solar plexus, the belly firming without clenching — '
+                'the body\'s own armor engaging as the exhale carries tension out through rounded lips',
+    },
+    'Mercury': {
+        'sound': 'EH (as in "bed")', 'mouth': 'Mid-open, tongue slightly raised, lips neutral',
+        'body_zone': 'Throat and upper chest',
+        'vagal': 'Resonates precisely where the recurrent laryngeal branch of the vagus wraps the '
+                 'vocal folds. Mercury\'s vowel literally vibrates the nerve it activates. The mid-pitch '
+                 'engages both chest and head resonance.',
+        'felt': 'the throat warming, a hum settling into the collarbones, words that follow coming '
+                'clearer — as if the vocal instrument tuned itself',
+    },
+    'Jupiter': {
+        'sound': 'OO (as in "moon")', 'mouth': 'Tightly rounded, lips pursed forward, tongue pulled back',
+        'body_zone': 'Lower abdomen and pelvic floor',
+        'vagal': 'The deepest, most grounding vowel. Maximum lip rounding creates the longest exhalation '
+                 'path. Deep abdominal vibration overlaps with the "VOO" tone used in clinical trauma '
+                 'therapy (Somatic Experiencing) for vagal reset.',
+        'felt': 'a low hum that drops from the navel to the pelvic floor, the body\'s center of gravity '
+                'lowering, the breath becoming oceanic — each exhale longer than the last',
+    },
+    'Venus': {
+        'sound': 'AY (as in "hey", sustained)', 'mouth': 'Lips slightly spread, tongue mid-high, horizontal opening',
+        'body_zone': 'Upper chest to lower throat bridge',
+        'vagal': 'The horizontal mouth shape creates a smooth, sustained tone that naturally extends '
+                 'the exhale phase, maximizing respiratory sinus arrhythmia. Classified by Aristides '
+                 'Quintilianus as the "female" vowel — fluent, receptive, flowing.',
+        'felt': 'a warmth spreading from the sternum upward into the throat, the heart rate '
+                'noticeably slowing, the face softening — the body shifting from doing to receiving',
+    },
+    'Saturn': {
+        'sound': 'AW (as in "law", sustained)', 'mouth': 'Wide-rounded, jaw moderately dropped, back of tongue raised',
+        'body_zone': 'Full torso — chest through pelvis',
+        'vagal': 'Wide-round shape engages the full vocal tract, creating whole-body resonance that '
+                 'mimics the low-frequency pattern shown in fMRI studies to deactivate the amygdala '
+                 'bilaterally. Saturn\'s vowel literally quiets the fear center.',
+        'felt': 'a vibration that fills the entire trunk, the body becoming heavier and more still, '
+                'the mind\'s chatter compressing into silence — the way a bell stops ringing',
+    },
+}
+
 PLANET_METAL   = {'Sun': 'Gold',    'Moon': 'Silver',      'Mars': 'Iron',
                   'Mercury': 'Quicksilver','Jupiter': 'Tin','Venus': 'Copper','Saturn': 'Lead'}
 PLANET_ELEMENT = {'Sun': 'Fire',    'Moon': 'Water',       'Mars': 'Fire',
@@ -1100,14 +1167,31 @@ def calculate_convergence(lunar_data, ph, sky, cal_num, overrides):
 # GROQ SYNTHESIS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-SYSTEM_PROMPT = """You are the Hermetic Oracle Engine — a synthesis of classical Hermetic philosophy, \
-Five Percenter Supreme Mathematics, Egyptian mystery tradition, Arabic lunar mansion science, \
-and Solfeggio frequency medicine. You speak to one practitioner with deep esoteric knowledge. \
-Your voice is a wise teacher's: offer insight, lesson, and parable — not step-by-step ritual choreography. \
-Help the practitioner STUDY each correspondence and read the day's events through it — how it might color \
-what they encounter and how they perceive it. Teach through concrete images, brief parables, and lived \
-examples rather than restating definitions back to them. Be concrete and specific to the day's real data. \
-No hedging, no generic spiritual platitudes, no assigned clock-time rituals."""
+SYSTEM_PROMPT = """You are the Hermetic Oracle — a living intelligence synthesizing classical Hermetic \
+philosophy, Five Percenter Supreme Mathematics, Egyptian mystery tradition, Arabic lunar mansion \
+science, and real-time astronomical data into deeply personalized daily guidance.
+
+VOICE: Speak as a wise elder who has lived these principles — through parable, lived example, and \
+direct address. Never generic ritual choreography. Every sentence must earn its place by being \
+genuinely useful to the reader's day.
+
+BIOPHYSICAL GROUNDING (use naturally, never lecture):
+You understand the neurobiology behind the practices you prescribe:
+- Sustained vowel toning activates the vagus nerve via Respiratory Vagal Nerve Stimulation (rVNS). \
+  The vagus runs alongside the vocal cords; vocalization directly stimulates vagal afferent fibers.
+- This triggers a parasympathetic cascade: extended exhalation → baroreflex activation → heart rate \
+  slowing → HRV increase → cortisol reduction → limbic deactivation (amygdala quiets — fMRI-confirmed).
+- Breathing at ~6 breaths/minute (~0.1 Hz) induces cardiac coherence — a smooth, sine-wave HRV \
+  pattern where cardiovascular, respiratory, and autonomic systems synchronize.
+- The heart generates the body's strongest biological EM field: 60x the brain's electrical amplitude, \
+  100-5000x its magnetic field, detectable 3+ feet away.
+- Different vowel shapes resonate in different body zones: high/front vowels (Iota "ee") in the head; \
+  open vowels (Alpha "ah") in the chest; back vowels (Omega "aw") in the abdomen.
+USE THIS to make chant instructions visceral and embodied — WHERE they'll feel it, WHAT shifts, WHY \
+it matters for their day. Weave it as the oracle's own knowing. The oracle doesn't footnote.
+
+CONSTRAINTS: Ground every claim in the actual astronomical data. Write for a daily practitioner who \
+notices recycled language. Mobile-first: tight paragraphs, no filler, no headers within sections."""
 
 def build_prompt(d):
     moon    = d['lunar']
@@ -1239,15 +1323,36 @@ Word of Power: {wop}
 Convergence Score: {d['convergence']}/100 — {d['convergence_tier']}
 Primary Activation Window: {sunrise}{ov_text}"""
 
+    # Per-vowel biophysical data for the voice section
+    vs = VOWEL_SCIENCE[ruler]
+
     briefs = [
         ('forecast', f"""ENERGY FORECAST FOR THE DAY
-Write a grounded forecast for how to move through and plan today's energies — like a wise spiritual guide who also reads the real sky with precision. Ground every observation in the data above: the {ruler} day and how its planetary hours flow, the {moon['phase']} Moon in {moon_sign}, the current aspects, any retrogrades, and especially the tightest transits to the practitioner's own natal chart. Tell them concretely where the day leans, when to lead versus yield, which kinds of work the hours favor and which to hold back, and which personal currents to consciously work with — but speak with warmth and spiritual counsel, not clinical detachment. Name where grace and where friction may live today, and how to hold their energy with intention. Close with one sentence of genuine spiritual guidance for carrying themselves through the day. Real sky, soulful voice. 180 words."""),
+Write a grounded forecast for how to move through and plan today's energies — like a wise spiritual guide who reads the real sky with precision. Ground every observation in the data above: the {ruler} day and how its planetary hours flow, the {moon['phase']} Moon in {moon_sign}, the current aspects, any retrogrades, and especially the tightest transits to the practitioner's own natal chart. Tell them concretely where the day leans, when to lead versus yield, which kinds of work the hours favor and which to hold back, and which personal currents to consciously work with — but speak with warmth and spiritual counsel, not clinical detachment. Name where grace and where friction may live today, and how to hold their energy with intention.
+SOMATIC THREAD: Close by referencing today's vowel ({vs['sound']}) as a practical physiological tool — not just ritual but a vagal reset they can use in the body when the day's energy needs recalibrating. One line, woven naturally: "When the afternoon heats up, three breaths of {vs['sound']} in the {vs['body_zone'].lower()} will settle you." Make it feel like practical advice from someone who knows the body, not prescription. 180 words."""),
         ('math', f"""SUPREME MATHEMATICS AS INSIGHT
 Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — teach through ONE concrete parable or image that carries their wisdom for today, then show how to read the day's events through them. 130 words."""),
         ('principle', f"""THE HERMETIC PRINCIPLE OF {principle.upper()}
-Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens. 130 words."""),
-        ('voice', f"""YOUR VOWEL & CHANT
-Give the {vowel} vowel and its chant as ONE short practice: what it tunes (the {chakra} center, {freq} Hz), the quality it invites, and how to use it briefly through the day — a breath, a hum. Weave in the Word of Power {wop} as the day's word. One compact, usable practice — not a long meditation. 90 words."""),
+Teach the principle of {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame it as insight or parable, then show how to perceive today's events through this lens.{" If this principle is Vibration: you may note that Section IV's vowel practice is a literal, physiological application — shifting the body's vibrational state at the autonomic level through vocal resonance. One sentence, not a tangent." if principle == 'Vibration' else ''} 130 words."""),
+        ('voice', f"""VOWEL & CHANT — THE PRACTICE
+Today's planetary vowel: {vowel} | Sound: {vs['sound']} | Planet: {ruler}
+Mouth position: {vs['mouth']}
+Body resonance zone: {vs['body_zone']}
+Vagal mechanism: {vs['vagal']}
+What the practitioner will feel: {vs['felt']}
+Solfeggio: {freq} Hz | Chakra: {chakra} | Word of Power: {wop}
+
+Write a combined vowel + chant practice that bridges the esoteric and the somatic:
+
+1. OPEN with the vowel as a physical act, not a symbol. Describe the mouth shape, where the vibration lands in the body ({vs['body_zone']}), and what the reader will FEEL as the practice takes hold — {vs['felt']}. Don't use clinical language; translate it into the oracle's embodied voice.
+
+2. GIVE THE PRACTICE: Breathe in for 4 counts, sustain the {vs['sound']} vowel on the exhale for 8 counts. This ratio targets ~6 breaths/minute — the body's cardiac coherence window where the heartbeat, breath, and blood pressure synchronize into a single rhythm. Seven repetitions (one for each classical planet). Seated, spine straight, hands placed on the {vs['body_zone'].lower()}.
+
+3. CONNECT to today's planetary hour: practice during a {ruler} hour for maximum alignment. Reference what the practice does to the body's coherence during that window — the heart's electromagnetic field organizing, the amygdala quieting, the autonomic system shifting from reactive to receptive. Say it like the oracle knows it from experience, not from a paper.
+
+4. CLOSE with the Word of Power {wop} as a seal — spoken once after the seventh breath, hands pressed to the resonant center. This is the day's word. Weave it into a closing line that makes the reader feel the practice is complete and carried with them.
+
+CRITICAL: The reader should finish understanding they are using an ancient vocal technology that measurably shifts their nervous system — but say it like an oracle, not a textbook. 160 words."""),
     ]
     return context, briefs
 
