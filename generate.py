@@ -1327,6 +1327,29 @@ Write a combined vowel + chant practice bridging esoteric and somatic:
 3. CONNECT to a {ruler} hour for timing. What the practice does to the body's coherence — heartbeat, breath, and blood pressure synchronizing. Say it like you know it from experience.
 4. SEAL with Word of Power {wop} — spoken once after the seventh breath. Close so they feel the practice is complete and carried with them.
 The reader should finish knowing this is ancient vocal technology that genuinely shifts their nervous system. Say it like an oracle. 150 words."""),
+        ('meditation', f"""TODAY'S MEDITATION — MEMORIZE THIS
+Today's data: {ruler} day | {moon['phase']} Moon in {moon_sign} | Vowel: {vs['sound']} | Word of Power: {wop}
+Principle: {principle} | Mansion: {mansion[1]} ({mansion[3]}) | Math: {cal_sm[0]} + {base_sm[0]}
+Mouth position: {vs['mouth']} | Body zone: {vs['body_zone']}
+Felt sense: {vs['felt']}
+
+Write a SINGLE unified morning meditation the reader can memorize and carry all day. This is the synthesis — everything from the forecast, the mathematics, the principle, and the vowel practice distilled into one walkthrough they do once and internalize.
+
+FORMAT: Write as numbered steps (1. 2. 3. etc.) — short, direct, sequential. A beginner should be able to follow this without any prior esoteric knowledge. No jargon without immediate explanation. Each step is ONE action, ONE sentence.
+
+STRUCTURE (roughly 8-10 steps):
+- GROUND: Sit. Spine straight. Hands on {vs['body_zone'].lower()}. Close eyes. Name the day's ruler ({ruler}) and principle ({principle}) silently — this sets intention.
+- BREATHE: Three plain breaths to arrive. No vowel yet. Just feel the weight of the body.
+- VOWEL CYCLE: 4 counts in, 8 counts out sustaining {vs['sound']}. Seven rounds. Describe mouth shape in one phrase. Name what they'll feel ({vs['felt']}).
+- CONTEMPLATION: Between the last breath and the seal, hold silence for 10 seconds. Let today's principle ({principle}) surface as a single image or word — don't chase it, let it arrive.
+- SEAL: Speak {wop} once. Press hands to {vs['body_zone'].lower()}. Open eyes.
+- CARRY: One sentence they take into the day — drawn from today's math ({cal_sm[0]}) or mansion ({mansion[1]}) or principle ({principle}). Something they can silently repeat when the day gets loud.
+
+CRITICAL RULES:
+- This must be memorizable. Under 150 words total. No paragraph prose — steps only.
+- A person who has never meditated should be able to do this on their first try.
+- The vagal science is implicit in the structure (the 4:8 ratio IS the cardiac coherence technique) — don't explain it here, just prescribe it.
+- The carry phrase at the end is the day's anchor. Make it stick. 120-150 words."""),
     ]
     return context, briefs
 
@@ -1386,7 +1409,7 @@ def _strip_section_header(text):
                   count=1, flags=re.IGNORECASE).strip()
 
 def parse_sections(text):
-    labels = ['forecast', 'math', 'principle', 'voice']
+    labels = ['forecast', 'math', 'principle', 'voice', 'meditation']
     result = {l: '' for l in labels}
 
     # Primary: split on [[N]] markers (robust across models)
@@ -1510,6 +1533,7 @@ def generate_html(data, sections, generated_at):
     math_html       = text_to_html(sections.get('math', ''))
     principle_html  = text_to_html(sections.get('principle', ''))
     voice_html      = text_to_html(sections.get('voice', ''))
+    meditation_html = text_to_html(sections.get('meditation', ''))
 
     # ── Planet positions summary ──────────────────────────────────────────────
     pos = sky['positions']
@@ -1885,6 +1909,13 @@ def generate_html(data, sections, generated_at):
   </div>
   <div class="card section-content">{voice_html}</div>
 
+  <!-- ═══ SECTION V: TODAY'S MEDITATION ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">V</span>
+    <span class="section-title">TODAY&rsquo;S MEDITATION &mdash; MEMORIZE THIS</span>
+  </div>
+  <div class="card section-content" style="border-left:2px solid var(--gold-dim);padding-left:1.2rem">{meditation_html}</div>
+
   <!-- ASTRAL SHIELD & SEAL -->
   <div class="seal-row">
     <div class="card">
@@ -2066,7 +2097,7 @@ def main():
 
     # ── Groq synthesis ────────────────────────────────────────────────────────
     sections = {}
-    labels   = ['forecast', 'math', 'principle', 'voice']
+    labels   = ['forecast', 'math', 'principle', 'voice', 'meditation']
     if api_key:
         context, briefs = build_section_prompts(data)
         print(f'[Oracle] Generating {len(briefs)} sections (one request each) ...')
