@@ -175,14 +175,64 @@ PLANET_SEAL = {
     'Saturn':  'A leaden cross with a downward hook (the Saturn glyph) inside a black square',
 }
 
+MENCOMP_FORMULA = {
+    # Charley H. Higgins' Mensionization Complementation — α/β binomial equations
+    # mapped to each Hermetic principle. Format: (equation, variable_key, dimensional_note)
+    'Mentalism': (
+        'f⁰(α,β) = (α + β)⁰ = 1',
+        'The Mension — 0-dimensional Prima Materia. Before opposition manifests, '
+        'all is ONE: the Supreme Ultimate, the Prime Substance from which Mind projects reality.',
+        'The ONE precedes all duality. Mentalism is the Mension itself — the virtual fuel for creation.'
+    ),
+    'Correspondence': (
+        'f¹(α,β) = (α + β)¹ = α + β',
+        'α=Above (volatile/active), β=Below (fixed/passive). '
+        'The 1-dimensional binary line: two presences of the same entity.',
+        'As above, so below — the first opposition. α and β are identical in nature, different in effect.'
+    ),
+    'Vibration': (
+        'α(t) = sin(ωt)  ·  β(t) = sin(ωt + π)',
+        'α=Volatile wave, β=Fixed wave shifted 180°. Same waveform, opposite phase. '
+        'ω=angular frequency of oscillation.',
+        'Hot→cold→hot, volatile↔fixed — the harmonic oscillation between α and β that IS vibration.'
+    ),
+    'Polarity': (
+        'f¹(α,β) = α + β  where  α ≡ β',
+        'α and β are identical in nature (same sine wave), different in degree. '
+        'The Kybalion: "like and unlike are the same."',
+        'Opposites are not two things — they are one thing measured from two ends of a binary line.'
+    ),
+    'Rhythm': (
+        'α ⇌ β  ·  G(contraction) ↔ P(expansion)',
+        'G=Generative Power (α contracting), P=Productive Capacity (β expanding). '
+        'Contraction and expansion alternate in harmonic cycles.',
+        'The pendulum: α contracts as β expands, then reverses. Rhythm is the temporal engine of complementation.'
+    ),
+    'Cause and Effect': (
+        'f²(α,β) = (α + β)² = α² + 2αβ + β²',
+        'α²=Pure cause, β²=Pure effect, 2αβ=The interaction product — '
+        'the middle term where cause and effect meet.',
+        '2-dimensional complementation: every cause (α²) generates its effect (β²) '
+        'plus a cross-product (2αβ) that seeds the next cycle.'
+    ),
+    'Gender': (
+        'f³(α,β) = (α + β)³ = α³ + 3α²β + 3αβ² + β³',
+        'α=Masculine Generative Power (G), β=Feminine Productive Capacity (P). '
+        'Three orthogonal dimensions of complementation.',
+        'The 3-dimensional Lattice Datum: Gender is the full cubic complementation — '
+        'three α/β binary lines orthogonally joined. The architecture of manifest reality.'
+    ),
+}
+
+# Backward-compat wrapper keyed by planet (for formula/formula_key in HTML)
+_PRINCIPLE_FOR_RULER = {
+    'Sun': 'Mentalism', 'Moon': 'Rhythm', 'Mars': 'Cause and Effect',
+    'Mercury': 'Correspondence', 'Jupiter': 'Gender', 'Venus': 'Polarity',
+    'Saturn': 'Vibration',
+}
 HERMETIC_FORMULA = {
-    'Sun':     ('C = I * W * R_t', 'C=Causal Power, I=Intentional Will, W=Will-Force, R_t=Rhythmic Timing'),
-    'Moon':    ('R = M * R_t * L_c', 'R=Rhythmic Attunement, M=Mental Focus, R_t=Rhythmic Tide Coefficient, L_c=Lunar Core Capacity'),
-    'Mars':    ('V = A * F^2 / R', 'V=Vibrational Power, A=Amplitude of Action, F=Frequency of Strike, R=Internal Resistance'),
-    'Mercury': ('C = S_a / S_b', 'C=Correspondence Coefficient, S_a=Above Signature, S_b=Below Signature'),
-    'Jupiter': ('M = C * E_x', 'M=Manifest Reality, C=Consciousness, E_x=Expansion Coefficient'),
-    'Venus':   ('G = (M_a * M_p) / d^2', 'G=Generative Force, M_a=Active Principle, M_p=Passive Principle, d=distance from alignment'),
-    'Saturn':  ('P = -P_o', 'P=Current Pole, P_o=Opposite Pole (the Law of Polarity: everything has its opposite)'),
+    ruler: (MENCOMP_FORMULA[princ][0], MENCOMP_FORMULA[princ][1])
+    for ruler, princ in _PRINCIPLE_FOR_RULER.items()
 }
 
 LUNAR_MANSIONS = [
@@ -1171,6 +1221,16 @@ You understand why the practices you prescribe work in the body:
   (Alpha) in the chest; back vowels (Omega) in the abdomen.
 USE THIS to make instructions visceral — WHERE they'll feel it, WHAT shifts. The oracle doesn't footnote.
 
+MEN-COMP FRAMEWORK (Charley H. Higgins — Mensionization Complementation):
+Every opposition is an α/β binomial — two presences of the same entity, identical in nature, \
+different in effect. Alpha (α) is the volatile/active/contractive Generative Power; Beta (β) is \
+the fixed/passive/expansive Productive Capacity. Their relationship is a 180°-shifted sine wave: \
+same waveform, opposite phase. Raising the binomial to higher exponents adds orthogonal \
+dimensions of complementation. The 0-dimension (the Mension) is the Prima Materia — the ONE \
+before any opposition manifests. When discussing planetary tensions, squares, or oppositions, \
+frame them as α/β complementation — not conflict but two phases of one process. When the day's \
+principle maps to a Men-Comp equation, let the math breathe naturally through the teaching.
+
 CONSTRAINTS: Ground every claim in the actual astronomical data. Write for a daily practitioner. \
 Mobile-first: tight paragraphs, no filler, no headers within sections."""
 
@@ -1226,6 +1286,7 @@ Lunar Mansion #{mansion[0]}: {mansion[1]} ({mansion[2]}) — {mansion[3]}
 Calendar Numerology: {cal} = {cal_sm[0]} — {cal_sm[1]}
 Base Number (day of month): {base} = {base_sm[0]} — {base_sm[1]}
 Primary Hermetic Principle: {principle}
+Men-Comp Equation: {MENCOMP_FORMULA[principle][0]}
 Solfeggio Frequency: {freq} Hz
 Sacred Vowel: {vowel} | Resonant Chakra: {chakra}
 Word of Power: {wop}
@@ -1298,6 +1359,7 @@ Lunar Mansion #{mansion[0]}: {mansion[1]} ({mansion[2]}) — {mansion[3]}
 Calendar Numerology: {cal} = {cal_sm[0]} — {cal_sm[1]}
 Base Number (day of month): {base} = {base_sm[0]} — {base_sm[1]}
 Primary Hermetic Principle: {principle}
+Men-Comp Equation: {MENCOMP_FORMULA[principle][0]}
 Solfeggio Frequency: {freq} Hz
 Sacred Vowel: {vowel} | Resonant Chakra: {chakra}
 Word of Power: {wop}
@@ -1314,7 +1376,10 @@ Close with a somatic thread: today's vowel ({vs['sound']}) as a practical reset 
         ('math', f"""SUPREME MATHEMATICS AS INSIGHT
 Interpret calendar number {cal} ({cal_sm[0]}) and base number {base} ({base_sm[0]}) through Five Percenter Supreme Mathematics. Do NOT restate the numbers' dictionary meanings — teach through ONE concrete parable or image that carries their wisdom for today, then show how to read the day's events through them. 130 words."""),
         ('principle', f"""THE HERMETIC PRINCIPLE OF {principle.upper()}
-Teach {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame as insight or parable, then show how to perceive today's events through this lens.{" Note: today's vowel practice in Section IV is a literal physiological application of Vibration — shifting the body's state at the autonomic level through vocal resonance. One sentence, not a tangent." if principle == 'Vibration' else ''} 130 words."""),
+Men-Comp equation: {MENCOMP_FORMULA[principle][0]}
+Dimensional note: {MENCOMP_FORMULA[principle][2]}
+
+Teach {principle} as it moves through {ruler}'s field today, with Mansion {mansion[0]} ({mansion[1]}) and the {moon['phase']} as living context. Frame as insight or parable, then show how to perceive today's events through this lens. Weave the α/β complementation naturally — when you name a tension (square, retrograde, opposition), frame it as two phases of one process, not conflict. If the Men-Comp equation illuminates the principle, let the math breathe through the teaching in plain language.{" The vowel practice in Section IV is a literal physiological application of Vibration — shifting between α (sympathetic/volatile) and β (parasympathetic/fixed) through vocal resonance." if principle == 'Vibration' else ''} 140 words."""),
         ('voice', f"""VOWEL & CHANT — THE PRACTICE
 Today's vowel: {vowel} | Sound: {vs['sound']} | Planet: {ruler}
 Mouth: {vs['mouth']} | Resonance zone: {vs['body_zone']}
@@ -1491,6 +1556,7 @@ def generate_html(data, sections, generated_at):
     tier      = d['convergence_tier']
     breakdown = d['breakdown']
     formula, formula_key = HERMETIC_FORMULA[ruler]
+    formula_dim = MENCOMP_FORMULA.get(principle, MENCOMP_FORMULA['Mentalism'])[2]
     cal_sm  = SUPREME_MATH.get(cal, SUPREME_MATH[cal % 10])
     base_sm = SUPREME_MATH.get(base, SUPREME_MATH[base % 10])
 
@@ -1925,9 +1991,10 @@ def generate_html(data, sections, generated_at):
     <div class="card">
       <div class="card-title">Seal Geometry</div>
       <p style="font-size:0.87rem;color:var(--silver);margin-bottom:0.75rem">{PLANET_SEAL[ruler]}</p>
-      <div class="card-title" style="margin-top:1rem">Hermetic Formula</div>
+      <div class="card-title" style="margin-top:1rem">Men-Comp &middot; &alpha;/&beta; Equation</div>
       <div class="formula-box">{formula}</div>
       <div class="formula-key">{formula_key}</div>
+      <div class="formula-key" style="margin-top:0.5rem;font-style:italic;color:var(--gold-dim)">{formula_dim}</div>
     </div>
   </div>
 
