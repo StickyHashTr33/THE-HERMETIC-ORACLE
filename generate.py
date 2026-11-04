@@ -134,6 +134,86 @@ VOWEL_SCIENCE = {
     },
 }
 
+# One pranayama per planetary day. Each is chosen to match the ruler's element and
+# temperament, and kept distinct from the 4:8 vowel chant in Section IV.
+PLANET_PRANAYAMA = {
+    'Sun': {
+        'name': 'Surya Bhedana', 'gloss': 'sun-piercing breath',
+        'method': 'Close the left nostril with the ring finger. Inhale through the right nostril for 4 counts, '
+                  'then close the right with the thumb and exhale through the left for 6 counts. No breath holds.',
+        'rounds': '9 rounds',
+        'felt': 'warmth rising at the base of the skull and behind the sternum, alertness sharpening',
+        'science': 'Right-nostril-led breathing is the traditional heating, activating channel (pingala); '
+                   'small studies suggest it nudges sympathetic tone upward.',
+        'caution': '',
+    },
+    'Moon': {
+        'name': 'Chandra Bhedana', 'gloss': 'moon-piercing breath',
+        'method': 'Close the right nostril with the thumb. Inhale through the left nostril for 4 counts, '
+                  'then close the left with the ring finger and exhale through the right for 6 counts. No breath holds.',
+        'rounds': '9 rounds',
+        'felt': 'a cool, silvery slowing behind the eyes, shoulders dropping, the mind going tidal and soft',
+        'science': 'Left-nostril inhalation is the traditional cooling channel (ida), and the longer exhale '
+                   'leans on parasympathetic tone.',
+        'caution': '',
+    },
+    'Mars': {
+        'name': 'Kapalabhati', 'gloss': 'skull-shining breath',
+        'method': 'Sit tall. Take one full inhale, then give 20 quick, sharp exhales by snapping the belly in, '
+                  'letting each inhale happen passively on its own. Finish with one slow full inhale and a long, '
+                  'slow exhale, then rest 30 seconds on natural breath.',
+        'rounds': '3 rounds, resting between each',
+        'felt': 'the belly working like a bellows, heat gathering at the navel, the head bright and clear',
+        'science': 'Rapid diaphragmatic pulses raise arousal; the long recovery exhale afterward is where the '
+                   'parasympathetic rebound lands.',
+        'caution': 'End with: this is a forceful practice — skip it if pregnant or if blood pressure, heart or '
+                   'breathing conditions are a concern, stop at any lightheadedness, and swap in gentle equal '
+                   'breathing (4 in, 4 out) instead.',
+    },
+    'Mercury': {
+        'name': 'Nadi Shodhana', 'gloss': 'channel-cleansing alternate nostril breath',
+        'method': 'Close the right nostril with the right thumb and inhale through the left for 4 counts. '
+                  'Switch: close the left with the ring finger and exhale through the right for 6 counts. '
+                  'Inhale through the right for 4, switch, and exhale through the left for 6. That is one round.',
+        'rounds': '9 rounds',
+        'felt': 'a balanced coolness across the forehead, the two halves of the head evening out, thoughts sorting themselves',
+        'science': 'Small trials suggest alternate-nostril breathing improves heart-rate variability and shifts '
+                   'the body toward parasympathetic balance.',
+        'caution': '',
+    },
+    'Jupiter': {
+        'name': 'Ujjayi', 'gloss': 'victorious ocean breath',
+        'method': 'Breathe in through the nose for 5 counts while softly narrowing the back of the throat, as if '
+                  'fogging a mirror with the mouth closed, until a faint ocean sound rises. Exhale the same way '
+                  'for 7 counts.',
+        'rounds': '12 breaths',
+        'felt': 'a low tide-sound in the throat, the ribs widening in every direction, a sense of room',
+        'science': 'The slight narrowing of the throat slows the exhale and tends to raise vagal tone and '
+                   'heart-rate variability.',
+        'caution': '',
+    },
+    'Venus': {
+        'name': 'Bhramari', 'gloss': 'humming bee breath',
+        'method': 'Lips closed, teeth slightly apart, tongue resting soft. Inhale through the nose for 4 counts. '
+                  'Exhale for 8 counts as a steady closed-lip hum, like a bee, with no vowel shape. '
+                  'Hands rest on the heart.',
+        'rounds': '7 rounds',
+        'felt': 'a buzz in the skull and sinuses, the face softening, the jaw unclenching',
+        'science': 'Humming markedly raises nasal nitric oxide, a vasodilator, and the long exhale slows the heart.',
+        'caution': '',
+    },
+    'Saturn': {
+        'name': 'Sama Vritti', 'gloss': 'equal-measure breath',
+        'method': 'Inhale through the nose for 4 counts, hold gently for 2, exhale through the nose for 4 counts, '
+                  'hold empty for 2. Keep every side of the square the same length.',
+        'rounds': '12 rounds',
+        'felt': 'the body becoming a four-walled room, the breath laid down evenly like a ruler, restlessness losing its grip',
+        'science': 'An even, slow rhythm of about five cycles a minute sits in the resonance range, and a fixed '
+                   'count gives the mind one steady object, which dampens rumination.',
+        'caution': '',
+    },
+}
+
 PLANET_METAL   = {'Sun': 'Gold',    'Moon': 'Silver',      'Mars': 'Iron',
                   'Mercury': 'Quicksilver','Jupiter': 'Tin','Venus': 'Copper','Saturn': 'Lead'}
 PLANET_ELEMENT = {'Sun': 'Fire',    'Moon': 'Water',       'Mars': 'Fire',
@@ -1368,6 +1448,8 @@ Primary Activation Window: {sunrise}{ov_text}"""
 
     # Per-vowel biophysical data for the voice section
     vs = VOWEL_SCIENCE[ruler]
+    pr = PLANET_PRANAYAMA[ruler]
+    caution_line = f"Safety: {pr['caution']}" if pr['caution'] else ''
 
     briefs = [
         ('forecast', f"""ENERGY FORECAST FOR THE DAY
@@ -1415,6 +1497,30 @@ CRITICAL RULES:
 - A person who has never meditated should be able to do this on their first try.
 - The vagal science is implicit in the structure (the 4:8 ratio IS the cardiac coherence technique) — don't explain it here, just prescribe it.
 - The carry phrase at the end is the day's anchor. Make it stick. 120-150 words."""),
+        ('pranayama', f"""PRANAYAMA — THE BREATH PRACTICE
+Today's practice: {pr['name']} ({pr['gloss']}) | Ruler: {ruler} | Element: {PLANET_ELEMENT[ruler]}
+Technique: {pr['method']}
+Rounds: {pr['rounds']}
+What they'll feel: {pr['felt']}
+Physiology (say it plainly, one sentence, no jargon pile-up): {pr['science']}
+{caution_line}
+
+Write a pranayama meditation to be done on its own or after the vowel chant. This is a breath practice only — no vowel sounds, no Word of Power.
+
+FORMAT: numbered steps (1. 2. 3. etc.), short and direct. A beginner must be able to follow it on the first try. Each step is ONE action.
+
+STRUCTURE (roughly 7-9 steps):
+- OPEN: one sentence on why this breath belongs to {ruler} and to today's {moon['phase']} Moon in {moon_sign} — oracle voice, concrete, specific to today.
+- SETTLE: seated, spine tall, shoulders soft, eyes closed, one natural breath to arrive.
+- THE PRACTICE: the technique exactly as given above, with the exact counts, for the stated rounds. Describe each hand or breath movement plainly.
+- FELT SENSE: tell them what to notice ({pr['felt']}), woven in as a step rather than a lecture.
+- INTEGRATE: release the technique, thirty seconds of natural breath, sit in the afterglow.
+- CARRY: one line to take into the day, tied to {principle} or the {ruler} hour.
+
+CRITICAL RULES:
+- Counts and nostril sides must be exactly right — do not invent or alter the technique.
+- Never promise cures or medical outcomes. Speak of what they will feel, not what it treats.
+- Under 170 words. Steps only, no paragraph prose. 140-170 words."""),
     ]
     return context, briefs
 
@@ -1474,7 +1580,7 @@ def _strip_section_header(text):
                   count=1, flags=re.IGNORECASE).strip()
 
 def parse_sections(text):
-    labels = ['forecast', 'math', 'principle', 'voice', 'meditation']
+    labels = ['forecast', 'math', 'principle', 'voice', 'meditation', 'pranayama']
     result = {l: '' for l in labels}
 
     # Primary: split on [[N]] markers (robust across models)
@@ -1486,7 +1592,7 @@ def parse_sections(text):
                 num = int(chunks[i])
             except ValueError:
                 i += 2; continue
-            if 1 <= num <= 5:
+            if 1 <= num <= len(labels):
                 result[labels[num - 1]] = _strip_section_header(chunks[i + 1].strip())
             i += 2
         return result
@@ -1600,6 +1706,8 @@ def generate_html(data, sections, generated_at):
     principle_html  = text_to_html(sections.get('principle', ''))
     voice_html      = text_to_html(sections.get('voice', ''))
     meditation_html = text_to_html(sections.get('meditation', ''))
+    pranayama_html  = text_to_html(sections.get('pranayama', ''))
+    pran_name       = PLANET_PRANAYAMA[ruler]['name']
 
     # ── Planet positions summary ──────────────────────────────────────────────
     pos = sky['positions']
@@ -1982,6 +2090,13 @@ def generate_html(data, sections, generated_at):
   </div>
   <div class="card section-content" style="border-left:2px solid var(--gold-dim);padding-left:1.2rem">{meditation_html}</div>
 
+  <!-- ═══ SECTION VI: PRANAYAMA ═══ -->
+  <div class="section-header">
+    <span class="section-numeral">VI</span>
+    <span class="section-title">PRANAYAMA &mdash; {pran_name.upper()}</span>
+  </div>
+  <div class="card section-content" style="border-left:2px solid var(--gold-dim);padding-left:1.2rem">{pranayama_html}</div>
+
   <!-- ASTRAL SHIELD & SEAL -->
   <div class="seal-row">
     <div class="card">
@@ -2164,7 +2279,7 @@ def main():
 
     # ── Groq synthesis ────────────────────────────────────────────────────────
     sections = {}
-    labels   = ['forecast', 'math', 'principle', 'voice', 'meditation']
+    labels   = ['forecast', 'math', 'principle', 'voice', 'meditation', 'pranayama']
     if api_key:
         context, briefs = build_section_prompts(data)
         print(f'[Oracle] Generating {len(briefs)} sections (one request each) ...')
